@@ -306,6 +306,11 @@ const FoodiePage = () => {
       {/* Footer */}
       {/* Footer */}
       <Footer />
+
+      {/* Under Construction Sticky Note */}
+      <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white px-4 py-2 rounded-lg shadow-2xl transform rotate-3 border border-red-400 font-bold text-sm animate-bounce">
+        🚧 Site Under Construction
+      </div>
     </div>
   );
 };
