@@ -6,23 +6,6 @@ import Image from "next/image";
 
 const OrderPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-
-  const filters = [
-    "Sort",
-    "Rating 4.0+",
-    "Pure Veg",
-    "Non-Veg",
-    "Fast Delivery",
-  ];
-
-  const toggleFilter = (f: string) => {
-    if (selectedFilters.includes(f)) {
-      setSelectedFilters((prev) => prev.filter((item) => item !== f));
-    } else {
-      setSelectedFilters((prev) => [...prev, f]);
-    }
-  };
 
   const categories = [
     { name: "Foods", image: "🍔" },
@@ -107,11 +90,11 @@ const OrderPage = () => {
               <input
                 type="text"
                 placeholder="Search for food, restaurants, or items..."
-                className="w-full px-6 py-4 bg-white/90 backdrop-blur-md border border-white/30 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D92E2E] text-lg"
+                className="w-full px-6 py-4 bg-white/15 backdrop-blur-2xl border border-white/30 rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-lg text-white placeholder-white/70"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#D92E2E] text-white rounded-full font-bold shadow-md hover:bg-[#b91c1c] transition">
+              <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#D92E2E] rounded-full font-medium shadow-xl hover:bg-white/30 transition">
                 Search
               </button>
             </div>
@@ -123,34 +106,9 @@ const OrderPage = () => {
           <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-md">
             Categories
           </h2>
-
-          {/* Filters Section */}
-          <div className="mb-8 flex gap-3 flex-wrap justify-start">
-            {filters.map((f) => {
-              const isSelected = selectedFilters.includes(f);
-              return (
-                <button
-                  key={f}
-                  onClick={() => toggleFilter(f)}
-                  className={`px-6 py-2 rounded-full font-medium transition whitespace-nowrap flex items-center gap-2 ${
-                    isSelected
-                      ? "bg-[#D92E2E] text-white border border-[#D92E2E] shadow-lg"
-                      : "bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
-                  }`}
-                >
-                  {f}
-                  {isSelected && (
-                    <span className="ml-2 text-lg font-bold leading-none">
-                      &times;
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          <div className="relative group">
+          <div className="relative group px-8">
             <button
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#D92E2E] hover:bg-gray-50 transition opacity-0 group-hover:opacity-100"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center text-white hover:scale-125 transition duration-300"
               onClick={() => {
                 const container = document.getElementById(
                   "categories-container"
@@ -159,7 +117,20 @@ const OrderPage = () => {
                   container.scrollBy({ left: -200, behavior: "smooth" });
               }}
             >
-              &lt;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
             </button>
             <div
               id="categories-container"
@@ -168,9 +139,10 @@ const OrderPage = () => {
               {categories.map((cat, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group/item"
+                  className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group/item animate-slide-in opacity-0"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center text-4xl group-hover/item:scale-110 transition duration-300">
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center text-5xl group-hover/item:scale-110 transition duration-300 drop-shadow-md">
                     {cat.image}
                   </div>
                   <h3 className="font-medium text-white text-center text-sm">
@@ -180,7 +152,7 @@ const OrderPage = () => {
               ))}
             </div>
             <button
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#D92E2E] hover:bg-gray-50 transition opacity-0 group-hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center text-white hover:scale-125 transition duration-300"
               onClick={() => {
                 const container = document.getElementById(
                   "categories-container"
@@ -189,7 +161,20 @@ const OrderPage = () => {
                   container.scrollBy({ left: 200, behavior: "smooth" });
               }}
             >
-              &gt;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
             </button>
           </div>
         </section>

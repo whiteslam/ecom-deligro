@@ -6,7 +6,7 @@ import Footer from "./Footer";
 
 const FoodiePage = () => {
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       {/* Navbar */}
       {/* Navbar */}
       <Navbar />
@@ -17,7 +17,7 @@ const FoodiePage = () => {
           <div className="inline-block px-4 py-1 bg-white/15 backdrop-blur-2xl border border-white/30 text-white rounded-full shadow-xl text-sm font-semibold mb-2">
             More than Faster
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight text-[#2B2B2B]">
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight text-[#2B2B2B] dark:text-white">
             Desire{" "}
             <span className="relative inline-block">
               <span className="relative z-10 text-white bg-white/15 backdrop-blur-2xl border border-white/30 px-4 py-1 rounded-full shadow-xl transform -rotate-2 inline-block">
@@ -27,14 +27,14 @@ const FoodiePage = () => {
             <br />
             for Your Taste
           </h1>
-          <p className="text-lg text-[#2B2B2B] max-w-md">
+          <p className="text-lg text-[#2B2B2B] dark:text-gray-300 max-w-md">
             Food is what we eat to stay alive and healthy. It comes in many
             different forms and flavors, from fruits and vegetables to meats and
             grains.
           </p>
           <div className="flex items-center gap-4 pt-4">
             <Link href="/order">
-              <button className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center">
+              <button className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center">
                 Order Now
               </button>
             </Link>
@@ -90,10 +90,10 @@ const FoodiePage = () => {
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:bg-[#D92E2E] group-hover:text-white transition">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[#2B2B2B]">
+              <h3 className="text-xl font-bold mb-3 text-[#2B2B2B] dark:text-white">
                 {feature.title}
               </h3>
-              <p className="text-[#2B2B2B] text-sm leading-relaxed mb-4">
+              <p className="text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed mb-4">
                 {feature.desc}
               </p>
               <a
@@ -109,10 +109,10 @@ const FoodiePage = () => {
 
       {/* Best Sellers */}
       <section className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           Popular Restaurants 🍽️
         </h2>
-        <p className="text-gray-500 max-w-2xl mx-auto mb-12">
+        <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
           Explore the best restaurants in your area, offering a wide variety of
           cuisines and dining experiences.
         </p>
@@ -169,10 +169,10 @@ const FoodiePage = () => {
                 />
               </div>
               <div className="flex flex-col gap-1 flex-grow">
-                <h3 className="text-xl font-bold text-[#2B2B2B]">
+                <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white">
                   {restaurant.name}
                 </h3>
-                <div className="flex items-center gap-1 text-sm text-gray-700 flex-wrap">
+                <div className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-300 flex-wrap">
                   <span className="bg-green-600 text-white px-1 rounded text-xs font-bold">
                     {restaurant.rating} ★
                   </span>
@@ -180,7 +180,7 @@ const FoodiePage = () => {
                   {restaurant.price && <span>· {restaurant.price}</span>}
                   <span>· {restaurant.type}</span>
                 </div>
-                <p className="text-gray-600 text-sm line-clamp-2">
+                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
                   {restaurant.address}
                 </p>
                 <p className={`text-sm font-medium ${restaurant.statusColor}`}>
@@ -211,7 +211,7 @@ const FoodiePage = () => {
             </div>
           </div>
           <div className="flex-1 space-y-8">
-            <h2 className="text-4xl font-bold text-gray-900">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
               Why People Choose us?
             </h2>
             <div className="space-y-6">
@@ -240,10 +240,10 @@ const FoodiePage = () => {
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-[#2B2B2B]">
+                    <h3 className="text-xl font-bold mb-2 text-[#2B2B2B] dark:text-white">
                       {item.title}
                     </h3>
-                    <p className="text-[#2B2B2B] text-sm leading-relaxed">
+                    <p className="text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
@@ -256,10 +256,10 @@ const FoodiePage = () => {
 
       {/* Customer Feedback */}
       <section className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-[#2B2B2B] mb-4">
+        <h2 className="text-4xl font-bold text-[#2B2B2B] dark:text-white mb-4">
           Loved by Families <span className="text-[#D92E2E]">Across India</span>
         </h2>
-        <p className="text-[#2B2B2B] mb-12">
+        <p className="text-[#2B2B2B] dark:text-gray-300 mb-12">
           Explore our complete range of quality products
         </p>
 
@@ -291,11 +291,11 @@ const FoodiePage = () => {
               <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner">
                 {review.icon}
               </div>
-              <h3 className="text-xl font-bold text-[#2B2B2B] mb-1">
+              <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white mb-1">
                 {review.name}
               </h3>
               <p className="text-gray-500 text-sm mb-6">{review.location}</p>
-              <p className="text-[#2B2B2B] italic leading-relaxed">
+              <p className="text-[#2B2B2B] dark:text-gray-300 italic leading-relaxed">
                 &quot;{review.text}&quot;
               </p>
             </div>

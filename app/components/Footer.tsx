@@ -79,14 +79,77 @@ const Footer = () => {
         <div>
           <h4 className="font-bold text-[#2B2B2B] mb-4">Follow Us</h4>
           <div className="flex gap-4 text-gray-400">
-            <a href="#" className="hover:text-[#D92E2E] text-xl">
-              FB
+            <a
+              href="https://www.instagram.com/deligrodelivery/?hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#D92E2E] transition hover:scale-110"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
             </a>
-            <a href="#" className="hover:text-[#D92E2E] text-xl">
-              IG
+            <a
+              href="https://play.google.com/store/apps/details?id=com.deligrow.user&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#D92E2E] transition hover:scale-110"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-1.081.054A.996.996 0 0 1 2 21.29V2.71a.996.996 0 0 1 .529-.95.996.996 0 0 1 1.08.054z" />
+                <path
+                  fillOpacity=".5"
+                  d="M16.29 14.5l-2.5-2.5 2.5-2.5 5.06 2.85a.996.996 0 0 1 0 1.8l-5.06 2.85z"
+                />
+                <path
+                  fillOpacity=".5"
+                  d="M14.5 16.29L4.32 26.47a.996.996 0 0 0 1.25.1l13.99-7.87-5.06-2.41z"
+                  transform="translate(0 -4.47)"
+                />
+                <path
+                  fillOpacity=".5"
+                  d="M19.56 5.3L5.57-2.57a.996.996 0 0 0-1.25.1L14.5 7.71l5.06-2.41z"
+                  transform="translate(0 4.47)"
+                />
+              </svg>
             </a>
-            <a href="#" className="hover:text-[#D92E2E] text-xl">
-              TW
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#D92E2E] transition hover:scale-110"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
             </a>
           </div>
         </div>
