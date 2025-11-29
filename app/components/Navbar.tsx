@@ -5,6 +5,25 @@ import Link from "next/link";
 import UserProfileMenu from "./UserProfileMenu";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkLogin = () => {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedIn);
+    };
+
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
+
+    // Custom event for immediate updates within the same tab
+    window.addEventListener("loginStateChange", checkLogin);
+
+    return () => {
+      window.removeEventListener("storage", checkLogin);
+      window.removeEventListener("loginStateChange", checkLogin);
+    };
+  }, []);
   return (
     <nav className="relative w-[90%] max-w-5xl mx-auto flex items-center justify-between px-6 py-4 bg-white/15 backdrop-blur-2xl border border-white/30 shadow-xl rounded-full z-50">
       <div className="flex items-center gap-2">
@@ -40,7 +59,7 @@ const Navbar = () => {
         </a>
 
         {/* User Profile Menu */}
-        <UserProfileMenu />
+        <UserProfileMenu isLoggedIn={isLoggedIn} />
       </div>
     </nav>
   );

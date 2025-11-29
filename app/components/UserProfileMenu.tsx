@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import LiquidDarkModeToggle from "./LiquidDarkModeToggle";
 
-const UserProfileMenu = () => {
+interface UserProfileMenuProps {
+  isLoggedIn: boolean;
+}
+
+const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ isLoggedIn }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -53,25 +57,40 @@ const UserProfileMenu = () => {
             </svg>
           </button>
 
-          {/* User Info */}
+          {/* User Info or Login Prompt */}
           <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-200/30">
-            <div className="w-14 h-14 relative rounded-full overflow-hidden border-2 border-white/50 shadow-md">
-              <Image
-                src="https://ui-avatars.com/api/?name=Gaurav+Mirjha&background=D92E2E&color=fff"
-                alt="Profile"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-[#2B2B2B] leading-tight">
-                Gaurav Mirjha
-              </h3>
-              <p className="text-sm text-gray-700 font-medium">
-                +91 98765 43210
-              </p>
-              <p className="text-xs text-gray-600">Customer ID: 883920</p>
-            </div>
+            {isLoggedIn ? (
+              <>
+                <div className="w-14 h-14 relative rounded-full overflow-hidden border-2 border-white/50 shadow-md">
+                  <Image
+                    src="https://ui-avatars.com/api/?name=Gaurav+Mirjha&background=D92E2E&color=fff"
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#2B2B2B] leading-tight">
+                    Gaurav Mirjha
+                  </h3>
+                  <p className="text-sm text-gray-700 font-medium">
+                    +91 98765 43210
+                  </p>
+                  <p className="text-xs text-gray-600">Customer ID: 883920</p>
+                </div>
+              </>
+            ) : (
+              <div className="w-full text-center">
+                <p className="text-[#2B2B2B] font-medium mb-3">
+                  Welcome, Guest!
+                </p>
+                <Link href="/login">
+                  <button className="w-full py-2 bg-[#D92E2E] text-white rounded-xl font-bold text-sm shadow-md hover:bg-[#b91c1c] transition">
+                    Log In
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Menu Items */}
@@ -97,11 +116,20 @@ const UserProfileMenu = () => {
                 </Link>
               </li>
             ))}
-            <li className="pt-2 border-t border-gray-200">
-              <button className="w-full text-left text-[#D92E2E] font-bold hover:text-red-700 transition py-1">
-                Log Out
-              </button>
-            </li>
+            {isLoggedIn && (
+              <li className="pt-2 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("isLoggedIn");
+                    window.dispatchEvent(new Event("loginStateChange"));
+                    window.location.reload();
+                  }}
+                  className="w-full text-left text-[#D92E2E] font-bold hover:text-red-700 transition py-1"
+                >
+                  Log Out
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       )}

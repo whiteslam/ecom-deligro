@@ -218,22 +218,43 @@ const OrderPage = () => {
 
                     {/* Map Preview */}
                     {coords && (
-                      <div className="w-full h-32 rounded-xl overflow-hidden border border-white/50 shadow-inner relative">
-                        <iframe
-                          width="100%"
-                          height="100%"
-                          frameBorder="0"
-                          scrolling="no"
-                          marginHeight={0}
-                          marginWidth={0}
-                          src={`https://www.openstreetmap.org/export/embed.html?bbox=${
-                            coords.lng - 0.01
-                          },${coords.lat - 0.01},${coords.lng + 0.01},${
-                            coords.lat + 0.01
-                          }&layer=mapnik&marker=${coords.lat},${coords.lng}`}
-                          className="w-full h-full"
-                        ></iframe>
-                      </div>
+                      <>
+                        <div className="w-full h-32 rounded-xl overflow-hidden border border-white/50 shadow-inner relative">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            scrolling="no"
+                            marginHeight={0}
+                            marginWidth={0}
+                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${
+                              coords.lng - 0.01
+                            },${coords.lat - 0.01},${coords.lng + 0.01},${
+                              coords.lat + 0.01
+                            }&layer=mapnik&marker=${coords.lat},${coords.lng}`}
+                            className="w-full h-full"
+                          ></iframe>
+                        </div>
+                        <button
+                          onClick={() => setIsLocationOpen(false)}
+                          className="w-full py-2.5 bg-[#D92E2E] text-white rounded-xl font-bold text-sm shadow-md hover:bg-[#b92525] transition flex items-center justify-center gap-2"
+                        >
+                          <span>Confirm Location</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </button>
+                      </>
                     )}
                   </div>
                 )}

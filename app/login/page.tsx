@@ -3,12 +3,30 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+import { useRouter } from "next/navigation";
+
+import { auth } from "../firebase";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  ConfirmationResult,
+} from "firebase/auth";
+
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+  }
+}
+
 const LoginPage = () => {
+  const router = useRouter();
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [showOtp, setShowOtp] = useState(false);
   const [timer, setTimer] = useState(15);
   const [canResend, setCanResend] = useState(false);
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -22,22 +40,82 @@ const LoginPage = () => {
     return () => clearInterval(interval);
   }, [showOtp, timer]);
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const setupRecaptcha = () => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: () => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+          },
+        }
+      );
+    }
+  };
+
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mobile.length === 10) {
-      setShowOtp(true);
-      setTimer(15);
-      setCanResend(false);
+      try {
+        setupRecaptcha();
+        const appVerifier = window.recaptchaVerifier;
+        const phoneNumber = "+91" + mobile; // Assuming India for now
+        console.log("Attempting to send OTP to:", phoneNumber);
+        const confirmation = await signInWithPhoneNumber(
+          auth,
+          phoneNumber,
+          appVerifier
+        );
+        setConfirmationResult(confirmation);
+        setShowOtp(true);
+        setTimer(15);
+        setCanResend(false);
+      } catch (error: any) {
+        console.error("Error sending OTP:", error);
+        if (error.code === "auth/operation-not-allowed") {
+          alert(
+            "Phone authentication is not enabled in Firebase Console. Please enable it in Authentication > Sign-in method."
+          );
+        } else if (error.code === "auth/quota-exceeded") {
+          alert(
+            "SMS quota exceeded for this project. Please use a Test Phone Number (defined in Firebase Console) to continue testing."
+          );
+        } else if (error.code === "auth/unauthorized-domain") {
+          alert(
+            "This domain/IP is not authorized. Please add it to 'Authorized Domains' in Firebase Console > Authentication > Settings."
+          );
+        } else {
+          alert(`Failed to send OTP. Error: ${error.code} - ${error.message}`);
+        }
+      }
     } else {
       alert("Please enter a valid 10-digit mobile number");
     }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Verifying OTP: ${otp} for Mobile: ${mobile}`);
-    // Add verification logic here
+    if (otp.length === 6 && confirmationResult) {
+      try {
+        await confirmationResult.confirm(otp);
+        localStorage.setItem("isLoggedIn", "true");
+        window.dispatchEvent(new Event("loginStateChange"));
+        router.push("/");
+      } catch (error) {
+        console.error("Error verifying OTP:", error);
+        alert("Invalid OTP. Please try again.");
+      }
+    } else {
+      alert("Please enter a valid 6-digit OTP");
+    }
   };
+
+  // Add type definition for window
+  useEffect(() => {
+    window.recaptchaVerifier = undefined;
+  }, []);
 
   const handleResendOtp = () => {
     setTimer(15);
@@ -53,6 +131,7 @@ const LoginPage = () => {
           <h1 className="text-4xl font-bold text-[#2B2B2B] mb-8 text-center">
             Login to <span className="text-[#D92E2E]">Deligro</span>
           </h1>
+          <div id="recaptcha-container"></div>
 
           {!showOtp ? (
             <form onSubmit={handleSendOtp} className="space-y-6">
@@ -63,19 +142,24 @@ const LoginPage = () => {
                 >
                   Mobile Number
                 </label>
-                <input
-                  type="tel"
-                  id="mobile"
-                  value={mobile}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, "");
-                    if (val.length <= 10) setMobile(val);
-                  }}
-                  className="w-full px-6 py-3 bg-white/50 border border-white/30 rounded-full focus:outline-none focus:border-[#D92E2E] focus:ring-1 focus:ring-[#D92E2E] transition"
-                  placeholder="Enter 10-digit number"
-                  pattern="[0-9]{10}"
-                  required
-                />
+                <div className="relative">
+                  <span className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                    +91
+                  </span>
+                  <input
+                    type="tel"
+                    id="mobile"
+                    value={mobile}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "");
+                      if (val.length <= 10) setMobile(val);
+                    }}
+                    className="w-full pl-16 pr-6 py-3 bg-white/50 border border-white/30 rounded-full focus:outline-none focus:border-[#D92E2E] focus:ring-1 focus:ring-[#D92E2E] transition"
+                    placeholder="Enter 10-digit number"
+                    pattern="[0-9]{10}"
+                    required
+                  />
+                </div>
               </div>
               <button
                 type="submit"
@@ -100,7 +184,7 @@ const LoginPage = () => {
                   onChange={(e) => setOtp(e.target.value)}
                   className="w-full px-6 py-3 bg-white/50 border border-white/30 rounded-full focus:outline-none focus:border-[#D92E2E] focus:ring-1 focus:ring-[#D92E2E] transition text-center tracking-widest text-xl"
                   placeholder="• • • •"
-                  maxLength={4}
+                  maxLength={6}
                   required
                 />
               </div>
