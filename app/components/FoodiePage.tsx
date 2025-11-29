@@ -2,12 +2,23 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 // import LocationPopup from "./LocationPopup";
 
 const FoodiePage = () => {
+  const router = useRouter();
   // const [showLocationPopup, setShowLocationPopup] = useState(false);
+
+  const handleOrderNow = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    if (isLoggedIn) {
+      router.push("/order");
+    } else {
+      router.push("/login");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
@@ -36,11 +47,12 @@ const FoodiePage = () => {
             to your door.
           </p>
           <div className="flex items-center gap-4 pt-4">
-            <Link href="/login">
-              <button className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center">
-                Order Now
-              </button>
-            </Link>
+            <button
+              onClick={handleOrderNow}
+              className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center"
+            >
+              Order Now
+            </button>
           </div>
         </div>
         <div className="flex-1 relative">

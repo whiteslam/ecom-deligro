@@ -40,29 +40,56 @@ const LoginPage = () => {
     return () => clearInterval(interval);
   }, [showOtp, timer]);
 
-  const setupRecaptcha = () => {
+  // Removed useEffect for ReCAPTCHA to avoid race conditions
+
+  const getRecaptchaVerifier = () => {
     if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: () => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
-          },
-        }
-      );
+      const container = document.getElementById("recaptcha-container");
+      if (!container) {
+        console.error("Recaptcha container not found in DOM");
+        return null;
+      }
+
+      try {
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          "recaptcha-container",
+          {
+            size: "invisible",
+            callback: () => {
+              console.log("Recaptcha resolved");
+            },
+            "expired-callback": () => {
+              console.warn("Recaptcha expired");
+              // Optional: Reset verifier here
+            },
+          }
+        );
+        console.log("New ReCAPTCHA verifier created");
+      } catch (error) {
+        console.error("Error creating ReCAPTCHA verifier:", error);
+        return null;
+      }
     }
+    return window.recaptchaVerifier;
   };
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mobile.length === 10) {
       try {
-        setupRecaptcha();
-        const appVerifier = window.recaptchaVerifier;
-        const phoneNumber = "+91" + mobile; // Assuming India for now
+        const appVerifier = getRecaptchaVerifier();
+
+        if (!appVerifier) {
+          alert(
+            "Failed to initialize ReCAPTCHA. Please refresh and try again."
+          );
+          return;
+        }
+
+        const phoneNumber = "+91" + mobile;
         console.log("Attempting to send OTP to:", phoneNumber);
+
         const confirmation = await signInWithPhoneNumber(
           auth,
           phoneNumber,
@@ -74,6 +101,16 @@ const LoginPage = () => {
         setCanResend(false);
       } catch (error: any) {
         console.error("Error sending OTP:", error);
+        // Reset verifier on error to allow retry
+        if (window.recaptchaVerifier) {
+          try {
+            window.recaptchaVerifier.clear();
+          } catch (e) {
+            console.error(e);
+          }
+          window.recaptchaVerifier = undefined;
+        }
+
         if (error.code === "auth/operation-not-allowed") {
           alert(
             "Phone authentication is not enabled in Firebase Console. Please enable it in Authentication > Sign-in method."
