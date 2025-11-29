@@ -1,10 +1,14 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import LocationPopup from "./LocationPopup";
 
 const FoodiePage = () => {
+  const [showLocationPopup, setShowLocationPopup] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       {/* Navbar */}
@@ -28,16 +32,16 @@ const FoodiePage = () => {
             for Your Taste
           </h1>
           <p className="text-lg text-[#2B2B2B] dark:text-gray-300 max-w-md">
-            Food is what we eat to stay alive and healthy. It comes in many
-            different forms and flavors, from fruits and vegetables to meats and
-            grains.
+            Bringing delicious meals from Bemetara's best restaurants straight
+            to your door.
           </p>
           <div className="flex items-center gap-4 pt-4">
-            <Link href="/order">
-              <button className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center">
-                Order Now
-              </button>
-            </Link>
+            <button
+              onClick={() => setShowLocationPopup(true)}
+              className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center"
+            >
+              Order Now
+            </button>
           </div>
         </div>
         <div className="flex-1 relative">
@@ -110,7 +114,7 @@ const FoodiePage = () => {
       {/* Best Sellers */}
       <section className="px-8 py-20 max-w-7xl mx-auto text-center">
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Popular Restaurants 🍽️
+          Popular Restaurants
         </h2>
         <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
           Explore the best restaurants in your area, offering a wide variety of
@@ -257,29 +261,30 @@ const FoodiePage = () => {
       {/* Customer Feedback */}
       <section className="px-8 py-20 max-w-7xl mx-auto text-center">
         <h2 className="text-4xl font-bold text-[#2B2B2B] dark:text-white mb-4">
-          Loved by Families <span className="text-[#D92E2E]">Across India</span>
+          Loved by Families{" "}
+          <span className="text-[#D92E2E]">Across Bemetara</span>
         </h2>
         <p className="text-[#2B2B2B] dark:text-gray-300 mb-12">
-          Explore our complete range of quality products
+          Real experience from people who trust Deligro Delivery every day.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              name: "Priya Sharma",
-              location: "Bilaspur",
+              name: " Shantanu Goswami",
+              location: "Bemetara",
               text: "Deligro has been a staple in our kitchen for over 10 years. The authentic taste and purity is unmatched.",
               icon: "👩",
             },
             {
-              name: "Rajesh Sharma",
-              location: "Mumbai",
+              name: "Deepak Yadav",
+              location: "Bemetara",
               text: "The quality speaks for itself. My family trusts Deligro for all our cooking needs. Highly recommended!",
               icon: "👨",
             },
             {
-              name: "Anjali Patel",
-              location: "Bhilai",
+              name: "Mukesh Goswami",
+              location: "Bemetara",
               text: "Pure, natural, and healthy - exactly what every family needs. Thank you Deligro for maintaining such high standards.",
               icon: "👩",
             },
@@ -311,6 +316,10 @@ const FoodiePage = () => {
       <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white px-4 py-2 rounded-lg shadow-2xl transform rotate-3 border border-red-400 font-bold text-sm animate-bounce">
         🚧 Site Under Construction
       </div>
+      {/* Location Popup */}
+      {showLocationPopup && (
+        <LocationPopup onClose={() => setShowLocationPopup(false)} />
+      )}
     </div>
   );
 };

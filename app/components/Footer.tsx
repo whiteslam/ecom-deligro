@@ -45,12 +45,12 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/admin" className="hover:text-[#D92E2E]">
                 Partner with us
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/rider" className="hover:text-[#D92E2E]">
                 Ride with us
               </a>
             </li>
@@ -154,8 +154,24 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="text-center text-gray-400 text-sm">
-        © 2024 Deligro. All rights reserved.
+      <div className="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-white text-sm">
+          © 2026 Deligro(Phoxera Solutions Private Limited). All rights
+          reserved.
+        </p>
+        <p className="text-xs text-white font-light tracking-widest uppercase opacity-70 hover:opacity-100 transition-all duration-300">
+          <span className="cursor-default">
+            Designed & Developed by{" "}
+            <span className="font-medium text-white">Gaurav Mirjha</span>
+          </span>
+          <span className="mx-2 opacity-50">|</span>
+          <a
+            href="#"
+            className="hover:text-white hover:underline transition-colors"
+          >
+            Contact Developer
+          </a>
+        </p>
       </div>
     </footer>
   );
