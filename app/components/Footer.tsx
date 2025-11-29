@@ -40,7 +40,10 @@ const Footer = () => {
           <h4 className="font-bold text-[#2B2B2B] mb-4">Contact</h4>
           <ul className="space-y-2 text-[#2B2B2B] text-sm">
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a
+                href="https://wa.me/919109175556"
+                className="hover:text-[#D92E2E]"
+              >
                 Help & Support
               </a>
             </li>

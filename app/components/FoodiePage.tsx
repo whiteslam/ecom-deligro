@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import LocationPopup from "./LocationPopup";
+// import LocationPopup from "./LocationPopup";
 
 const FoodiePage = () => {
-  const [showLocationPopup, setShowLocationPopup] = useState(false);
+  // const [showLocationPopup, setShowLocationPopup] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
@@ -36,12 +36,11 @@ const FoodiePage = () => {
             to your door.
           </p>
           <div className="flex items-center gap-4 pt-4">
-            <button
-              onClick={() => setShowLocationPopup(true)}
-              className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center"
-            >
-              Order Now
-            </button>
+            <Link href="/login">
+              <button className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center">
+                Order Now
+              </button>
+            </Link>
           </div>
         </div>
         <div className="flex-1 relative">
@@ -69,22 +68,22 @@ const FoodiePage = () => {
             {
               title: "Quality Food",
               icon: "🥗",
-              desc: "Contrary to popular belief, Lorem Ipsum is not simply random text.",
+              desc: "Freshly prepared meals from trusted restaurants, delivered with care.",
             },
             {
               title: "Fast Delivery",
               icon: "🚀",
-              desc: "Contrary to popular belief, Lorem Ipsum is not simply random text.",
+              desc: "Follow the quickest routes in Bemetara to deliver your order in time.",
             },
             {
               title: "Easy Payment",
               icon: "💳",
-              desc: "Contrary to popular belief, Lorem Ipsum is not simply random text.",
+              desc: "Seamless and secure payment process with multiple payment options.",
             },
             {
-              title: "24/7 Service",
-              icon: "🎧",
-              desc: "Contrary to popular belief, Lorem Ipsum is not simply random text.",
+              title: "10k+ Orders Delivered",
+              icon: "📦",
+              desc: "10k orders delivered successfully with care.",
             },
           ].map((feature, idx) => (
             <div
@@ -100,12 +99,6 @@ const FoodiePage = () => {
               <p className="text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed mb-4">
                 {feature.desc}
               </p>
-              <a
-                href="#"
-                className="text-[#D92E2E] font-semibold text-sm hover:underline"
-              >
-                Learn More
-              </a>
             </div>
           ))}
         </div>
@@ -317,9 +310,9 @@ const FoodiePage = () => {
         🚧 Site Under Construction
       </div>
       {/* Location Popup */}
-      {showLocationPopup && (
+      {/* {showLocationPopup && (
         <LocationPopup onClose={() => setShowLocationPopup(false)} />
-      )}
+      )} */}
     </div>
   );
 };

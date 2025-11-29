@@ -85,8 +85,6 @@ const UserProfileMenu = () => {
               { name: "My Cart", href: "/cart" },
               { name: "Your Orders", href: "/orders" },
               { name: "Add Payment Setting", href: "/payment" },
-              { name: "About", href: "/about" },
-              { name: "Contact", href: "/contact" },
               { name: "Send Feedback", href: "/feedback" },
               { name: "Report & Safety", href: "/report" },
               { name: "Settings", href: "/settings" },

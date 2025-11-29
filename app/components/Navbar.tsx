@@ -8,13 +8,15 @@ const Navbar = () => {
   return (
     <nav className="relative w-[90%] max-w-5xl mx-auto flex items-center justify-between px-6 py-4 bg-white/15 backdrop-blur-2xl border border-white/30 shadow-xl rounded-full z-50">
       <div className="flex items-center gap-2">
-        <Image
-          src="/img/logo.png"
-          alt="Deligro Logo"
-          width={100}
-          height={30}
-          className="object-contain"
-        />
+        <Link href="/">
+          <Image
+            src="/img/logo.png"
+            alt="Deligro Logo"
+            width={100}
+            height={30}
+            className="object-contain cursor-pointer"
+          />
+        </Link>
       </div>
       <div className="flex items-center gap-4">
         <div className="hidden md:flex items-center gap-8 font-medium text-[#2B2B2B] mr-4">
