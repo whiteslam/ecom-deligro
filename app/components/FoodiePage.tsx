@@ -280,26 +280,38 @@ const FoodiePage = () => {
               location: "Bemetara",
               text: "Deligro has been a staple in our kitchen for over 10 years. The authentic taste and purity is unmatched.",
               icon: "👩",
+              image: "/img/reviews/shantanu_goswami.png",
             },
             {
               name: "Deepak Yadav",
               location: "Bemetara",
               text: "The quality speaks for itself. My family trusts Deligro for all our cooking needs. Highly recommended!",
               icon: "👨",
+              image: "/img/reviews/deepak_yadav.png",
             },
             {
               name: "Mukesh Goswami",
               location: "Bemetara",
               text: "Pure, natural, and healthy - exactly what every family needs. Thank you Deligro for maintaining such high standards.",
               icon: "👩",
+              image: "/img/reviews/mukesh_goswami.jpg",
             },
           ].map((review, idx) => (
             <div
               key={idx}
               className="bg-white/15 backdrop-blur-2xl border border-white/30 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300 flex flex-col items-center text-center"
             >
-              <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner">
-                {review.icon}
+              <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner relative overflow-hidden">
+                {review.image ? (
+                  <Image
+                    src={review.image}
+                    alt={review.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  review.icon
+                )}
               </div>
               <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white mb-1">
                 {review.name}

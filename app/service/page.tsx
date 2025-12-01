@@ -1,19 +1,25 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ServicesSection from "../components/ServicesSection";
 
 const ServicePage = () => {
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       <Navbar />
-      <main className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl font-bold text-[#2B2B2B] mb-8">
-          Our <span className="text-[#D92E2E]">Services</span>
-        </h1>
-        <p className="text-xl text-[#2B2B2B] max-w-2xl mx-auto">
-          We provide the best food delivery service in town. Fast, reliable, and
-          delicious.
-        </p>
+      <main className="px-8 py-12 max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-[#2B2B2B] dark:text-white mb-4">
+            Our <span className="text-white">Services</span>
+          </h1>
+          <p className="text-xl text-[#2B2B2B] dark:text-gray-300 max-w-2xl mx-auto">
+            Explore our wide range of delivery services designed for your
+            convenience.
+          </p>
+        </div>
+
+        <div className="bg-white/15 backdrop-blur-2xl border border-white/30 rounded-3xl shadow-xl overflow-hidden">
+          <ServicesSection />
+        </div>
       </main>
       <Footer />
     </div>

@@ -233,7 +233,7 @@ const ServicesSection = () => {
       </div>
 
       {/* Request Card */}
-      <div className="lg:w-1/3 bg-black text-white rounded-3xl p-8 flex flex-col justify-center relative overflow-hidden">
+      <div className="lg:w-1/3 bg-[#D92E2E] text-white rounded-3xl p-8 flex flex-col justify-center relative overflow-hidden">
         {/* Decorative circle */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-800 rounded-full blur-3xl -mr-10 -mt-10 opacity-50"></div>
 
