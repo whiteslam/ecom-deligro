@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const OrderPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLocationOpen, setIsLocationOpen] = useState(true);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [locationName, setLocationName] = useState("Bemetara");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null
@@ -125,7 +125,7 @@ const OrderPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       <Navbar />
 
       <main className="px-8 py-10 max-w-7xl mx-auto">
@@ -406,21 +406,29 @@ const RestaurantCard = ({ restaurant }: { restaurant: any }) => (
       />
     </div>
     <div className="flex flex-col gap-1 flex-grow">
-      <h3 className="text-xl font-bold text-[#2B2B2B]">{restaurant.name}</h3>
-      <div className="flex items-center gap-1 text-sm text-gray-800 flex-wrap">
+      <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white">
+        {restaurant.name}
+      </h3>
+      <div className="flex items-center gap-1 text-sm text-gray-800 dark:text-gray-300 flex-wrap">
         <span className="bg-green-600 text-white px-1 rounded text-xs font-bold">
           {restaurant.rating} ★
         </span>
-        <span className="text-gray-700 font-medium">{restaurant.reviews}</span>
+        <span className="text-gray-700 dark:text-gray-400 font-medium">
+          {restaurant.reviews}
+        </span>
         {restaurant.price && <span>· {restaurant.price}</span>}
         <span>· {restaurant.type}</span>
       </div>
-      <p className="text-gray-700 text-sm line-clamp-2">{restaurant.address}</p>
+      <p className="text-gray-700 dark:text-gray-400 text-sm line-clamp-2">
+        {restaurant.address}
+      </p>
       <p className={`text-sm font-medium ${restaurant.statusColor}`}>
         {restaurant.status}
       </p>
       {restaurant.features && (
-        <p className="text-gray-600 text-xs mt-1">{restaurant.features}</p>
+        <p className="text-gray-600 dark:text-gray-500 text-xs mt-1">
+          {restaurant.features}
+        </p>
       )}
     </div>
   </div>

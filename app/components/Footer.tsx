@@ -12,20 +12,22 @@ const Footer = () => {
             height={40}
             className="mb-4 object-contain"
           />
-          <p className="text-[#2B2B2B] text-sm">
+          <p className="text-[#2B2B2B] dark:text-white text-sm">
             Delivering happiness to your doorstep.
           </p>
         </div>
         <div>
-          <h4 className="font-bold text-[#2B2B2B] mb-4">Company</h4>
-          <ul className="space-y-2 text-[#2B2B2B] text-sm">
+          <h4 className="font-bold text-[#2B2B2B] dark:text-white mb-4">
+            Company
+          </h4>
+          <ul className="space-y-2 text-[#2B2B2B] dark:text-gray-300 text-sm">
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/about" className="hover:text-[#D92E2E]">
                 About Us
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/careers" className="hover:text-[#D92E2E]">
                 Careers
               </a>
             </li>
@@ -37,8 +39,10 @@ const Footer = () => {
           </ul>
         </div>
         <div>
-          <h4 className="font-bold text-[#2B2B2B] mb-4">Contact</h4>
-          <ul className="space-y-2 text-[#2B2B2B] text-sm">
+          <h4 className="font-bold text-[#2B2B2B] dark:text-white mb-4">
+            Contact
+          </h4>
+          <ul className="space-y-2 text-[#2B2B2B] dark:text-gray-300 text-sm">
             <li>
               <a
                 href="https://wa.me/919109175556"
@@ -60,27 +64,31 @@ const Footer = () => {
           </ul>
         </div>
         <div>
-          <h4 className="font-bold text-[#2B2B2B] mb-4">Legal</h4>
-          <ul className="space-y-2 text-[#2B2B2B] text-sm">
+          <h4 className="font-bold text-[#2B2B2B] dark:text-white mb-4">
+            Legal
+          </h4>
+          <ul className="space-y-2 text-[#2B2B2B] dark:text-gray-300 text-sm">
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/terms-conditions" className="hover:text-[#D92E2E]">
                 Terms & Conditions
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/privacy-policy" className="hover:text-[#D92E2E]">
                 Privacy Policy
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-[#D92E2E]">
+              <a href="/cookie-policy" className="hover:text-[#D92E2E]">
                 Cookie Policy
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h4 className="font-bold text-[#2B2B2B] mb-4">Follow Us</h4>
+          <h4 className="font-bold text-[#2B2B2B] dark:text-white mb-4">
+            Follow Us
+          </h4>
           <div className="flex gap-4 text-gray-400">
             <a
               href="https://www.instagram.com/deligrodelivery/?hl=en"

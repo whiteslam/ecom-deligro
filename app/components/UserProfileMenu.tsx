@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LiquidDarkModeToggle from "./LiquidDarkModeToggle";
+import ThemeToggle from "./ThemeToggle";
 
 interface UserProfileMenuProps {
   isLoggedIn: boolean;
@@ -35,7 +35,7 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ isLoggedIn }) => {
 
       {/* Dropdown Menu */}
       {isMenuOpen && (
-        <div className="absolute right-0 top-14 w-72 bg-white/70 backdrop-blur-[80px] border border-white/40 rounded-3xl shadow-2xl p-6 z-50 animate-in fade-in zoom-in duration-200">
+        <div className="absolute right-0 top-14 w-72 bg-white/95 backdrop-blur-[200px] border border-white/40 rounded-3xl shadow-2xl p-6 z-50 animate-in fade-in zoom-in duration-200">
           {/* Close Button */}
           <button
             onClick={() => setIsMenuOpen(false)}
@@ -97,7 +97,7 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ isLoggedIn }) => {
           <ul className="space-y-2">
             <li className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/20 transition">
               <span className="text-[#2B2B2B] font-medium">Dark Mode</span>
-              <LiquidDarkModeToggle />
+              <ThemeToggle />
             </li>
             {[
               { name: "Profile", href: "/profile" },

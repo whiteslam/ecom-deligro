@@ -161,11 +161,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       <Navbar />
       <main className="px-8 py-20 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
         <div className="bg-white/15 backdrop-blur-2xl border border-white/30 p-10 rounded-3xl shadow-xl w-full max-w-md">
-          <h1 className="text-4xl font-bold text-[#2B2B2B] mb-8 text-center">
+          <h1 className="text-4xl font-bold text-[#2B2B2B] dark:text-white mb-8 text-center">
             Login to <span className="text-[#D92E2E]">Deligro</span>
           </h1>
           <div id="recaptcha-container"></div>
@@ -175,7 +175,7 @@ const LoginPage = () => {
               <div>
                 <label
                   htmlFor="mobile"
-                  className="block text-sm font-medium text-[#2B2B2B] mb-2"
+                  className="block text-sm font-medium text-[#2B2B2B] dark:text-gray-200 mb-2"
                 >
                   Mobile Number
                 </label>

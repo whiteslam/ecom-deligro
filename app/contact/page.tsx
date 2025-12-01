@@ -4,13 +4,13 @@ import Footer from "../components/Footer";
 
 const ContactPage = () => {
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       <Navbar />
       <main className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl font-bold text-[#2B2B2B] mb-8">
+        <h1 className="text-5xl font-bold text-[#2B2B2B] dark:text-white mb-8">
           Contact <span className="text-[#D92E2E]">Us</span>
         </h1>
-        <p className="text-xl text-[#2B2B2B] max-w-2xl mx-auto">
+        <p className="text-xl text-[#2B2B2B] dark:text-gray-300 max-w-2xl mx-auto">
           Have questions? Get in touch with us. We are here to help!
         </p>
       </main>

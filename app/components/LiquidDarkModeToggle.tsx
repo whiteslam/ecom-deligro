@@ -34,10 +34,10 @@ const LiquidDarkModeToggle = () => {
   return (
     <div
       onClick={toggleTheme}
-      className={`relative w-20 h-10 rounded-full cursor-pointer overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] border ${
+      className={`relative w-20 h-10 rounded-full cursor-pointer overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] border border-black ${
         isDark
-          ? "bg-gray-900/60 border-white/10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
-          : "bg-white/40 border-white/50 shadow-[inset_0_2px_5px_rgba(255,255,255,0.5)]"
+          ? "bg-gray-900/60 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+          : "bg-white/40 shadow-[inset_0_2px_5px_rgba(255,255,255,0.5)]"
       } backdrop-blur-xl group`}
     >
       {/* Specular Highlight for Dark Mode */}

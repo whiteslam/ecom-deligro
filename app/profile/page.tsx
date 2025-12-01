@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const ProfilePage = () => {
   return (
-    <div className="min-h-screen bg-[#E59A01] font-sans text-gray-800 pt-6">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
       <Navbar />
       <main className="px-8 py-10 max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-8 drop-shadow-md">
