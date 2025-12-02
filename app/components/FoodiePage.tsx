@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import RestaurantCard from "./RestaurantCard";
+import { restaurantsData } from "../data/restaurants";
 // import LocationPopup from "./LocationPopup";
 
 const FoodiePage = () => {
@@ -21,235 +23,268 @@ const FoodiePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
-      {/* Navbar */}
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500 overflow-hidden">
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Hero Section with Animated Background */}
       <header className="relative px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        {/* Animated Gradient Orbs */}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
+
         <div className="flex-1 space-y-6 z-10">
-          <div className="inline-block px-4 py-1 bg-white/15 backdrop-blur-2xl border border-white/30 text-white rounded-full shadow-xl text-sm font-semibold mb-2">
-            More than Faster
+          <div className="inline-block px-5 py-2 bg-white/20 backdrop-blur-xl border border-white/40 text-white rounded-full shadow-2xl text-sm font-bold mb-2 hover:bg-white/30 transition-all duration-300">
+            ✨ More than Faster
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight text-[#2B2B2B] dark:text-white">
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-[#2B2B2B] dark:text-white">
             Desire{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 text-white bg-white/15 backdrop-blur-2xl border border-white/30 px-4 py-1 rounded-full shadow-xl transform -rotate-2 inline-block">
+              <span className="relative z-10 text-white bg-gradient-to-r from-[#D92E2E] to-orange-500 px-6 py-2 rounded-full shadow-2xl transform -rotate-2 inline-block hover:rotate-0 transition-transform duration-300">
                 Food
               </span>
             </span>{" "}
             <br />
-            for Your Taste
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2B2B2B] via-[#D92E2E] to-orange-500 dark:from-white dark:via-[#D92E2E] dark:to-orange-400">
+              for Your Taste
+            </span>
           </h1>
-          <p className="text-lg text-[#2B2B2B] dark:text-gray-300 max-w-md">
+          <p className="text-xl text-[#2B2B2B] dark:text-gray-300 max-w-md leading-relaxed">
             Bringing delicious meals from Bemetara's best restaurants straight
-            to your door.
+            to your door.{" "}
+            <span className="font-bold text-[#D92E2E]">
+              Fast, Fresh & Reliable.
+            </span>
           </p>
-          <div className="flex items-center gap-4 pt-4">
+          <div className="flex flex-wrap items-center gap-4 pt-4">
             <button
               onClick={handleOrderNow}
-              className="h-14 px-8 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/25 transition transform hover:scale-105 flex items-center justify-center"
+              className="h-14 px-10 bg-[#D92E2E] text-white rounded-full font-bold shadow-2xl hover:bg-[#b91c1c] transition-all duration-300 transform hover:scale-105 hover:shadow-[#D92E2E]/50 flex items-center justify-center gap-2"
             >
               Order Now
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </button>
+            <button className="h-14 px-8 bg-white/20 backdrop-blur-xl border border-white/40 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
+              How It Works
             </button>
           </div>
         </div>
         <div className="flex-1 relative">
           <div className="relative w-full h-[500px] md:h-[600px]">
-            {/* Yellow Background Blob */}
-            <div className="absolute top-0 right-0 w-[90%] h-[90%] bg-yellow-400 rounded-tl-[100px] rounded-bl-[50px] rounded-br-[50px] rounded-tr-[50px] -z-10 transform rotate-3"></div>
+            {/* Enhanced Background Blob with Gradient */}
+            <div className="absolute top-0 right-0 w-[90%] h-[90%] bg-gradient-to-br from-yellow-400 via-orange-400 to-[#D92E2E] rounded-tl-[100px] rounded-bl-[50px] rounded-br-[50px] rounded-tr-[50px] -z-10 transform rotate-3 shadow-2xl animate-pulse"></div>
+            <div className="absolute top-10 right-10 w-[85%] h-[85%] bg-white/10 backdrop-blur-sm rounded-tl-[90px] rounded-bl-[45px] rounded-br-[45px] rounded-tr-[45px] -z-5 transform rotate-6"></div>
 
             <Image
               src="/img/hero_image.png"
               alt="Happy customer with pizza"
               fill
-              className="object-contain z-10"
+              className="object-contain z-10 drop-shadow-2xl"
               priority
             />
-
-            {/* Floating Badges */}
           </div>
         </div>
       </header>
 
-      {/* Features Section */}
-      <section className="px-8 py-20 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              title: "Quality Food",
-              icon: "🥗",
-              desc: "Freshly prepared meals from trusted restaurants, delivered with care.",
-            },
-            {
-              title: "Fast Delivery",
-              icon: "🚀",
-              desc: "Follow the quickest routes in Bemetara to deliver your order in time.",
-            },
-            {
-              title: "Easy Payment",
-              icon: "💳",
-              desc: "Seamless and secure payment process with multiple payment options.",
-            },
-            {
-              title: "10k+ Orders Delivered",
-              icon: "📦",
-              desc: "10k orders delivered successfully with care.",
-            },
-          ].map((feature, idx) => (
-            <div
-              key={idx}
-              className="bg-white/15 backdrop-blur-2xl border border-white/30 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300 flex flex-col items-center text-center group"
-            >
-              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:bg-[#D92E2E] group-hover:text-white transition">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-[#2B2B2B] dark:text-white">
-                {feature.title}
-              </h3>
-              <p className="text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed mb-4">
-                {feature.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Features Section with Enhanced Cards */}
+      <section className="px-8 py-20 max-w-7xl mx-auto relative">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-1/2 left-0 w-72 h-72 bg-gradient-to-br from-orange-400/10 to-[#D92E2E]/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 right-0 w-64 h-64 bg-gradient-to-tl from-yellow-400/10 to-orange-400/10 rounded-full blur-3xl"></div>
 
-      {/* Best Sellers */}
-      <section className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Popular Restaurants
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
-          Explore the best restaurants in your area, offering a wide variety of
-          cuisines and dining experiences.
-        </p>
+        <div className="relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#2B2B2B] dark:text-white mb-4">
+              Why Choose{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+                DELIGRO
+              </span>
+            </h2>
+            <p className="text-lg text-[#2B2B2B] dark:text-gray-300 max-w-2xl mx-auto">
+              Experience the difference with our premium delivery service
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              name: "Rasoi Restaurant",
-              rating: "3.8",
-              reviews: "(775)",
-              price: "₹200–400",
-              type: "Fast Food",
-              address: "Infront of Pt, JLN College, Kobiya",
-              status: "Closed · Opens 9 am Sat",
-              statusColor: "text-red-500",
-              features: "Dine-in · Drive-through · No-contact delivery",
-              image: "/img/restaurant-img/Rasoi Restaurant.webp",
-            },
-            {
-              name: "Hotel Sapphire Restaurant",
-              rating: "3.8",
-              reviews: "(204)",
-              price: "",
-              type: "Restaurant",
-              address: "Professor Colony, Raipur road",
-              status: '"Currently Best restaurants in bemetara."',
-              statusColor: "text-blue-600 italic",
-              features: "",
-              image: "/img/restaurant-img/Hotel Sapphire Restaurant.webp",
-            },
-            {
-              name: "Maa bhawani restaurant",
-              rating: "3.8",
-              reviews: "(49)",
-              price: "",
-              type: "Vegetarian",
-              address: "PG8M+PQJ Old Bus Stand, Chowk, beside Hanum...",
-              status: "Closes soon · 11 pm",
-              statusColor: "text-orange-500",
-              features: "Dine-in · Takeaway",
-              image: "/img/restaurant-img/Maa bhawani restaurant.webp",
-            },
-          ].map((restaurant, idx) => (
-            <div
-              key={idx}
-              className="bg-white/15 backdrop-blur-2xl border border-white/30 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300 text-left flex flex-col h-full"
-            >
-              <div className="h-48 bg-gray-100 rounded-2xl mb-4 relative overflow-hidden">
-                <Image
-                  src={restaurant.image}
-                  alt={restaurant.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex flex-col gap-1 flex-grow">
-                <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white">
-                  {restaurant.name}
-                </h3>
-                <div className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-300 flex-wrap">
-                  <span className="bg-green-600 text-white px-1 rounded text-xs font-bold">
-                    {restaurant.rating} ★
-                  </span>
-                  <span className="text-gray-500">{restaurant.reviews}</span>
-                  {restaurant.price && <span>· {restaurant.price}</span>}
-                  <span>· {restaurant.type}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                title: "Quality Food",
+                icon: "🥗",
+                desc: "Freshly prepared meals from trusted restaurants, delivered with care.",
+                gradient: "from-green-400 to-emerald-600",
+              },
+              {
+                title: "Fast Delivery",
+                icon: "🚀",
+                desc: "Follow the quickest routes in Bemetara to deliver your order in time.",
+                gradient: "from-blue-400 to-indigo-600",
+              },
+              {
+                title: "Easy Payment",
+                icon: "💳",
+                desc: "Seamless and secure payment process with multiple payment options.",
+                gradient: "from-purple-400 to-violet-600",
+              },
+              {
+                title: "10k+ Orders Delivered",
+                icon: "📦",
+                desc: "10k orders delivered successfully with care.",
+                gradient: "from-orange-400 to-red-600",
+              },
+            ].map((feature, idx) => (
+              <div
+                key={idx}
+                className="group relative bg-white/15 backdrop-blur-xl border border-white/30 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center hover:-translate-y-2"
+              >
+                {/* Gradient Background on Hover */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-500`}
+                ></div>
+
+                {/* Icon with Animated Background */}
+                <div className="relative mb-6">
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} rounded-2xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
+                  ></div>
+                  <div className="relative w-20 h-20 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
-                  {restaurant.address}
+
+                <h3 className="relative text-xl font-bold mb-3 text-[#2B2B2B] dark:text-white group-hover:text-[#D92E2E] transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="relative text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed mb-4">
+                  {feature.desc}
                 </p>
-                <p className={`text-sm font-medium ${restaurant.statusColor}`}>
-                  {restaurant.status}
-                </p>
-                {restaurant.features && (
-                  <p className="text-gray-500 text-xs mt-1">
-                    {restaurant.features}
-                  </p>
-                )}
+
+                {/* Feature Badge */}
+                <div className="relative mt-auto">
+                  <span className="px-4 py-1 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full text-xs font-medium text-[#2B2B2B] dark:text-gray-200 border border-white/20">
+                    Premium Service
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="px-8 py-20 max-w-7xl mx-auto my-12">
-        <div className="flex flex-col md:flex-row items-center gap-16">
+      {/* Popular Restaurants with Enhanced Cards */}
+      <section className="px-8 py-20 max-w-7xl mx-auto text-center relative">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-0 left-1/4 w-80 h-80 bg-gradient-to-br from-[#D92E2E]/10 to-orange-400/10 rounded-full blur-3xl"></div>
+
+        <div className="relative z-10">
+          <div className="inline-block mb-4">
+            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
+              🍽️ Featured Restaurants
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+            Popular{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              Restaurants
+            </span>
+          </h2>
+          <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12">
+            Explore the best restaurants in your area, offering a wide variety
+            of cuisines and dining experiences.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {restaurantsData.slice(0, 3).map((restaurant) => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us - Enhanced */}
+      <section className="px-8 py-20 max-w-7xl mx-auto my-12 relative">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#D92E2E]/10 to-yellow-400/10 rounded-full blur-3xl"></div>
+
+        <div className="relative flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 relative h-[400px] w-full">
             <div className="absolute inset-0 flex items-center justify-center">
+              {/* Decorative Gradient Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-[#D92E2E]/20 rounded-3xl blur-2xl"></div>
               <Image
                 src="/img/three_phones_orange_bg.png"
                 alt="Deligro App Interface on Multiple Devices"
                 fill
-                className="object-contain"
+                className="object-contain drop-shadow-2xl relative z-10"
               />
             </div>
           </div>
           <div className="flex-1 space-y-8">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
-              Why People Choose us?
+            <div className="inline-block mb-2">
+              <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
+                💡 Why DELIGRO?
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white">
+              Why People{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+                Choose us?
+              </span>
             </h2>
             <div className="space-y-6">
               {[
                 {
-                  title: "Bemetara’s Only Trusted Delivery Service",
+                  title: "Bemetara's Only Trusted Delivery Service",
                   icon: "🏙️",
                   desc: "Exclusive, local, and built just for the people of Bemetara — no competitors, no delays, no confusion.",
+                  gradient: "from-blue-400 to-indigo-600",
                 },
                 {
                   title: "Fast & Reliable Delivery Every Time",
                   icon: "⚡",
                   desc: "Our riders know every street and shortcut, ensuring quick, safe, and consistently on-time deliveries.",
+                  gradient: "from-yellow-400 to-orange-500",
                 },
                 {
                   title: "All Your Favorites Delivered to Your Doorstep",
                   icon: "🛍️",
                   desc: "From top local restaurants to daily essentials, Deligro brings the widest range of choices in one app.",
+                  gradient: "from-green-400 to-emerald-600",
                 },
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex gap-6 items-start p-6 rounded-3xl transition-all duration-300 border border-transparent hover:bg-white/15 hover:backdrop-blur-2xl hover:border-white/30 hover:shadow-xl group"
+                  className="group relative flex gap-6 items-start p-6 rounded-3xl transition-all duration-500 border border-transparent hover:bg-white/15 hover:backdrop-blur-xl hover:border-white/30 hover:shadow-2xl hover:-translate-x-2"
                 >
-                  <div className="text-5xl flex-shrink-0 drop-shadow-lg filter">
-                    {item.icon}
+                  {/* Gradient Background on Hover */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}
+                  ></div>
+
+                  {/* Icon with Gradient Background */}
+                  <div className="relative flex-shrink-0">
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${item.gradient} rounded-2xl blur-lg opacity-0 group-hover:opacity-70 transition-opacity duration-300`}
+                    ></div>
+                    <div className="relative w-16 h-16 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      {item.icon}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2 text-[#2B2B2B] dark:text-white">
+
+                  <div className="relative">
+                    <h3 className="text-xl font-bold mb-2 text-[#2B2B2B] dark:text-white group-hover:text-[#D92E2E] transition-colors">
                       {item.title}
                     </h3>
                     <p className="text-[#2B2B2B] dark:text-gray-300 text-sm leading-relaxed">
@@ -263,65 +298,114 @@ const FoodiePage = () => {
         </div>
       </section>
 
-      {/* Customer Feedback */}
-      <section className="px-8 py-20 max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-[#2B2B2B] dark:text-white mb-4">
-          Loved by Families{" "}
-          <span className="text-[#D92E2E]">Across Bemetara</span>
-        </h2>
-        <p className="text-[#2B2B2B] dark:text-gray-300 mb-12">
-          Real experience from people who trust Deligro Delivery every day.
-        </p>
+      {/* Customer Feedback - Enhanced */}
+      <section className="px-8 py-20 max-w-7xl mx-auto text-center relative">
+        {/* Background Decorative Elements */}
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-orange-400/10 to-[#D92E2E]/10 rounded-full blur-3xl"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              name: " Shantanu Goswami",
-              location: "Bemetara",
-              text: "Deligro has been a staple in our kitchen for over 10 years. The authentic taste and purity is unmatched.",
-              icon: "👩",
-              image: "/img/reviews/shantanu_goswami.png",
-            },
-            {
-              name: "Deepak Yadav",
-              location: "Bemetara",
-              text: "The quality speaks for itself. My family trusts Deligro for all our cooking needs. Highly recommended!",
-              icon: "👨",
-              image: "/img/reviews/deepak_yadav.png",
-            },
-            {
-              name: "Mukesh Goswami",
-              location: "Bemetara",
-              text: "Pure, natural, and healthy - exactly what every family needs. Thank you Deligro for maintaining such high standards.",
-              icon: "👩",
-              image: "/img/reviews/mukesh_goswami.jpg",
-            },
-          ].map((review, idx) => (
-            <div
-              key={idx}
-              className="bg-white/15 backdrop-blur-2xl border border-white/30 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300 flex flex-col items-center text-center"
-            >
-              <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner relative overflow-hidden">
-                {review.image ? (
-                  <Image
-                    src={review.image}
-                    alt={review.name}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  review.icon
-                )}
+        <div className="relative z-10">
+          <div className="inline-block mb-4">
+            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
+              ⭐ Customer Reviews
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-[#2B2B2B] dark:text-white mb-4">
+            Loved by Families{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              Across Bemetara
+            </span>
+          </h2>
+          <p className="text-lg text-[#2B2B2B] dark:text-gray-300 mb-12 max-w-2xl mx-auto">
+            Real experience from people who trust Deligro Delivery every day.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: " Shantanu Goswami",
+                location: "Bemetara",
+                text: "Deligro has been a staple in our kitchen for over 10 years. The authentic taste and purity is unmatched.",
+                icon: "👩",
+                image: "/img/reviews/shantanu_goswami.png",
+                gradient: "from-purple-400 to-violet-600",
+              },
+              {
+                name: "Deepak Yadav",
+                location: "Bemetara",
+                text: "The quality speaks for itself. My family trusts Deligro for all our cooking needs. Highly recommended!",
+                icon: "👨",
+                image: "/img/reviews/deepak_yadav.png",
+                gradient: "from-blue-400 to-indigo-600",
+              },
+              {
+                name: "Mukesh Goswami",
+                location: "Bemetara",
+                text: "Pure, natural, and healthy - exactly what every family needs. Thank you Deligro for maintaining such high standards.",
+                icon: "👩",
+                image: "/img/reviews/mukesh_goswami.jpg",
+                gradient: "from-orange-400 to-red-600",
+              },
+            ].map((review, idx) => (
+              <div
+                key={idx}
+                className="group relative bg-white/15 backdrop-blur-xl border border-white/30 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center hover:-translate-y-2"
+              >
+                {/* Gradient Background on Hover */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${review.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-500`}
+                ></div>
+
+                {/* Avatar with Gradient Ring */}
+                <div className="relative mb-4">
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${review.gradient} rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-110`}
+                  ></div>
+                  <div className="relative w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-4xl shadow-xl overflow-hidden ring-4 ring-white/20 group-hover:ring-white/40 transition-all">
+                    {review.image ? (
+                      <Image
+                        src={review.image}
+                        alt={review.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      review.icon
+                    )}
+                  </div>
+                </div>
+
+                <h3 className="relative text-xl font-bold text-[#2B2B2B] dark:text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
+                  {review.name}
+                </h3>
+                <div className="relative flex items-center gap-1 mb-6">
+                  <span className="text-gray-500 text-sm">
+                    {review.location}
+                  </span>
+                  <span className="px-2 py-0.5 bg-white/20 dark:bg-white/10 rounded-full text-xs font-medium border border-white/20 ml-2">
+                    Verified
+                  </span>
+                </div>
+
+                {/* Quote Icon */}
+                <div className="relative text-4xl text-[#D92E2E]/20 mb-2">
+                  "
+                </div>
+
+                <p className="relative text-[#2B2B2B] dark:text-gray-300 italic leading-relaxed">
+                  {review.text}
+                </p>
+
+                {/* Star Rating */}
+                <div className="relative mt-6 flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-yellow-400 text-lg">
+                      ⭐
+                    </span>
+                  ))}
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white mb-1">
-                {review.name}
-              </h3>
-              <p className="text-gray-500 text-sm mb-6">{review.location}</p>
-              <p className="text-[#2B2B2B] dark:text-gray-300 italic leading-relaxed">
-                &quot;{review.text}&quot;
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

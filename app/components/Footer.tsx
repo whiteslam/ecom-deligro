@@ -52,7 +52,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/admin" className="hover:text-[#D92E2E]">
+              <a href="/restaurant" className="hover:text-[#D92E2E]">
                 Partner with us
               </a>
             </li>

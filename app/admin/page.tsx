@@ -435,13 +435,9 @@ const AdminPage = () => {
               {[40, 65, 45, 80, 55, 90, 70].map((height, i) => (
                 <div
                   key={i}
-                  className="w-full bg-white/10 rounded-t-xl relative group cursor-pointer transition-all hover:bg-white/20"
-                  style={{ height: `${height}%` }}
+                  className="w-full bg-white/10 rounded-t-xl relative group cursor-pointer transition-all hover:bg-white/20 flex items-end"
                 >
-                  <div
-                    className="absolute bottom-0 w-full bg-white rounded-t-xl transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.5)]"
-                    style={{ height: `${height * 0.6}%`, opacity: 0.9 }}
-                  ></div>
+                  <div className="w-full bg-white rounded-t-xl transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.5)] opacity-90 h-full"></div>
                   {/* Tooltip */}
                   <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white text-[#E59A01] text-xs font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
                     ₹{height * 1000}

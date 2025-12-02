@@ -3,6 +3,12 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
+import RestaurantCard from "../components/RestaurantCard";
+import {
+  restaurantsData,
+  getTrendingRestaurants,
+  searchRestaurants,
+} from "../data/restaurants";
 
 const OrderPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,76 +74,31 @@ const OrderPage = () => {
     { name: "Pooja Items", image: "/img/categories/pooja-items.webp" },
   ];
 
-  const restaurants = [
-    {
-      name: "Rasoi Restaurant",
-      rating: "3.8",
-      reviews: "(775)",
-      price: "₹200–400",
-      type: "Fast Food",
-      address: "Infront of Pt, JLN College, Kobiya",
-      status: "Closed · Opens 9 am Sat",
-      statusColor: "text-red-500",
-      features: "Dine-in · Drive-through · No-contact delivery",
-      image: "/img/restaurant-img/Rasoi Restaurant.webp",
-      trending: true,
-    },
-    {
-      name: "Hotel Sapphire Restaurant",
-      rating: "3.8",
-      reviews: "(204)",
-      price: "₹300–500",
-      type: "Restaurant",
-      address: "Professor Colony, Raipur road",
-      status: "Open Now",
-      statusColor: "text-green-600",
-      features: "Dine-in · Takeaway",
-      image: "/img/restaurant-img/Hotel Sapphire Restaurant.webp",
-      trending: true,
-    },
-    {
-      name: "Maa bhawani restaurant",
-      rating: "3.8",
-      reviews: "(49)",
-      price: "₹100–300",
-      type: "Vegetarian",
-      address: "PG8M+PQJ Old Bus Stand, Chowk",
-      status: "Closes soon · 11 pm",
-      statusColor: "text-orange-500",
-      features: "Dine-in · Takeaway",
-      image: "/img/restaurant-img/Maa bhawani restaurant.webp",
-      trending: false,
-    },
-    // Duplicate for demo
-    {
-      name: "Spicy Bites",
-      rating: "4.2",
-      reviews: "(120)",
-      price: "₹150–350",
-      type: "Fast Food",
-      address: "Main Market, Bemetara",
-      status: "Open Now",
-      statusColor: "text-green-600",
-      features: "Dine-in · Delivery",
-      image: "/img/restaurant-img/Rasoi Restaurant.webp",
-      trending: false,
-    },
-  ];
+  // Get filtered restaurants based on search
+  const filteredRestaurants = searchQuery
+    ? searchRestaurants(searchQuery)
+    : restaurantsData;
+
+  const trendingRestaurants = getTrendingRestaurants();
 
   return (
-    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500 overflow-hidden">
       <Navbar />
 
-      <main className="px-8 py-10 max-w-7xl mx-auto">
+      <main className="px-8 py-10 max-w-7xl mx-auto relative">
+        {/* Animated Background Orbs */}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D92E2E]/10 to-orange-400/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-yellow-400/10 to-[#D92E2E]/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
+
         {/* Search and Filter Section */}
-        <div className="mb-12 space-y-6">
+        <div className="mb-12 space-y-6 relative z-10">
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-2xl relative flex items-center gap-4">
               {/* Location Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setIsLocationOpen(!isLocationOpen)}
-                  className="h-14 px-6 bg-white/15 backdrop-blur-2xl border border-white/30 text-white rounded-full font-medium shadow-xl hover:bg-white/25 transition flex items-center gap-2"
+                  className="h-14 px-6 bg-white/20 backdrop-blur-xl border border-white/40 text-white rounded-full font-medium shadow-2xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2"
                 >
                   <span className="max-w-[100px] truncate">{locationName}</span>
                   <svg
@@ -264,11 +225,11 @@ const OrderPage = () => {
                 <input
                   type="text"
                   placeholder="Search for food, restaurants, or items..."
-                  className="w-full px-6 py-4 bg-white/15 backdrop-blur-2xl border border-white/30 rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-white/50 text-lg text-white placeholder-white/70"
+                  className="w-full px-6 py-4 bg-white/20 backdrop-blur-xl border border-white/40 rounded-full shadow-2xl focus:outline-none focus:ring-2 focus:ring-white/50 text-lg text-white placeholder-white/70"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-white/15 backdrop-blur-2xl border border-white/30 text-[#D92E2E] rounded-full font-medium shadow-xl hover:bg-white/30 transition">
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#D92E2E] text-white rounded-full font-medium shadow-xl hover:bg-[#b91c1c] transition">
                   Search
                 </button>
               </div>
@@ -277,13 +238,21 @@ const OrderPage = () => {
         </div>
 
         {/* Categories Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-md">
-            Categories
+        <section className="mb-16 relative z-10">
+          <div className="inline-block mb-6">
+            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-white shadow-lg">
+              🏷️ Browse Categories
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 drop-shadow-md">
+            What are you{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              craving?
+            </span>
           </h2>
           <div className="relative group px-8">
             <button
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center text-white hover:scale-125 transition duration-300"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/30 hover:scale-110 transition duration-300 shadow-lg"
               onClick={() => {
                 const container = document.getElementById(
                   "categories-container"
@@ -314,10 +283,9 @@ const OrderPage = () => {
               {categories.map((cat, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group/item animate-slide-in opacity-0"
-                  style={{ animationDelay: `${idx * 0.1}s` }}
+                  className="flex flex-col items-center gap-3 min-w-[100px] cursor-pointer group/item"
                 >
-                  <div className="w-24 h-24 rounded-full flex items-center justify-center text-5xl group-hover/item:scale-110 transition duration-300 drop-shadow-md relative overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <div className="relative w-24 h-24 rounded-full flex items-center justify-center text-5xl group-hover/item:scale-110 transition duration-300 drop-shadow-md overflow-hidden bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl">
                     {cat.image.startsWith("/") ? (
                       <Image
                         src={cat.image}
@@ -336,7 +304,7 @@ const OrderPage = () => {
               ))}
             </div>
             <button
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center text-white hover:scale-125 transition duration-300"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/30 hover:scale-110 transition duration-300 shadow-lg"
               onClick={() => {
                 const container = document.getElementById(
                   "categories-container"
@@ -364,29 +332,50 @@ const OrderPage = () => {
         </section>
 
         {/* Trending Restaurants */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-md">
-            Trending Restaurants 🔥
+        <section className="mb-16 relative z-10">
+          <div className="inline-block mb-6">
+            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-white shadow-lg">
+              🔥 Hot Right Now
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 drop-shadow-md">
+            Trending{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              Restaurants
+            </span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {restaurants
-              .filter((r) => r.trending)
-              .map((restaurant, idx) => (
-                <RestaurantCard key={idx} restaurant={restaurant} />
-              ))}
+            {trendingRestaurants.map((restaurant) => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
           </div>
         </section>
 
         {/* All Restaurants */}
-        <section>
-          <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-md">
-            All Restaurants 🍽️
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {restaurants.map((restaurant, idx) => (
-              <RestaurantCard key={idx} restaurant={restaurant} />
-            ))}
+        <section className="relative z-10">
+          <div className="inline-block mb-6">
+            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-white shadow-lg">
+              🍽️ All Options
+            </span>
           </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 drop-shadow-md">
+            {searchQuery ? "Search Results" : "All Restaurants"}
+          </h2>
+          {filteredRestaurants.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {filteredRestaurants.map((restaurant) => (
+                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No restaurants found
+              </h3>
+              <p className="text-white/70">Try searching for something else</p>
+            </div>
+          )}
         </section>
       </main>
 
@@ -394,44 +383,5 @@ const OrderPage = () => {
     </div>
   );
 };
-
-const RestaurantCard = ({ restaurant }: { restaurant: any }) => (
-  <div className="bg-white/15 backdrop-blur-2xl border border-white/30 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300 text-left flex flex-col h-full cursor-pointer group">
-    <div className="h-48 bg-gray-100 rounded-2xl mb-4 relative overflow-hidden">
-      <Image
-        src={restaurant.image}
-        alt={restaurant.name}
-        fill
-        className="object-cover group-hover:scale-105 transition duration-500"
-      />
-    </div>
-    <div className="flex flex-col gap-1 flex-grow">
-      <h3 className="text-xl font-bold text-[#2B2B2B] dark:text-white">
-        {restaurant.name}
-      </h3>
-      <div className="flex items-center gap-1 text-sm text-gray-800 dark:text-gray-300 flex-wrap">
-        <span className="bg-green-600 text-white px-1 rounded text-xs font-bold">
-          {restaurant.rating} ★
-        </span>
-        <span className="text-gray-700 dark:text-gray-400 font-medium">
-          {restaurant.reviews}
-        </span>
-        {restaurant.price && <span>· {restaurant.price}</span>}
-        <span>· {restaurant.type}</span>
-      </div>
-      <p className="text-gray-700 dark:text-gray-400 text-sm line-clamp-2">
-        {restaurant.address}
-      </p>
-      <p className={`text-sm font-medium ${restaurant.statusColor}`}>
-        {restaurant.status}
-      </p>
-      {restaurant.features && (
-        <p className="text-gray-600 dark:text-gray-500 text-xs mt-1">
-          {restaurant.features}
-        </p>
-      )}
-    </div>
-  </div>
-);
 
 export default OrderPage;

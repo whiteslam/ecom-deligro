@@ -75,6 +75,7 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
+
         <a
           href="https://play.google.com/store/apps/details?id=com.deligrow.user&hl=en_IN"
           target="_blank"
