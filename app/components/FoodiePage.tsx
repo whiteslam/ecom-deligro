@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import RestaurantCard from "./RestaurantCard";
+import HeroSlider from "./HeroSlider";
 import { restaurantsData } from "../data/restaurants";
 // import LocationPopup from "./LocationPopup";
 
@@ -27,20 +28,25 @@ const FoodiePage = () => {
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Section with Animated Background */}
-      <header className="relative px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-        {/* Animated Gradient Orbs */}
-        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
+      {/* Hero Slider Section */}
+      <section className="px-4 md:px-8 py-6 max-w-7xl mx-auto">
+        <HeroSlider />
+      </section>
 
-        <div className="flex-1 space-y-6 z-10">
-          <div className="inline-block px-5 py-2 bg-white/20 backdrop-blur-xl border border-white/40 text-white rounded-full shadow-2xl text-sm font-bold mb-2 hover:bg-white/30 transition-all duration-300">
+      {/* Hero Section with Animated Background */}
+      <header className="relative px-4 md:px-8 py-8 md:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        {/* Animated Gradient Orbs */}
+        <div className="absolute top-20 left-10 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-60 md:w-80 h-60 md:h-80 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
+
+        <div className="flex-1 space-y-4 md:space-y-6 z-10 text-center md:text-left">
+          <div className="inline-block px-4 md:px-5 py-2 bg-white/20 backdrop-blur-xl border border-white/40 text-white rounded-full shadow-2xl text-xs md:text-sm font-bold mb-2 hover:bg-white/30 transition-all duration-300">
             ✨ More than Faster
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight text-[#2B2B2B] dark:text-white">
+          <h1 className="text-4xl md:text-7xl font-extrabold leading-tight text-[#2B2B2B] dark:text-white">
             Desire{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 text-white bg-gradient-to-r from-[#D92E2E] to-orange-500 px-6 py-2 rounded-full shadow-2xl transform -rotate-2 inline-block hover:rotate-0 transition-transform duration-300">
+              <span className="relative z-10 text-white bg-gradient-to-r from-[#D92E2E] to-orange-500 px-4 md:px-6 py-1 md:py-2 rounded-full shadow-2xl transform -rotate-2 inline-block hover:rotate-0 transition-transform duration-300">
                 Food
               </span>
             </span>{" "}
@@ -49,17 +55,17 @@ const FoodiePage = () => {
               for Your Taste
             </span>
           </h1>
-          <p className="text-xl text-[#2B2B2B] dark:text-gray-300 max-w-md leading-relaxed">
+          <p className="text-base md:text-xl text-[#2B2B2B] dark:text-gray-300 max-w-md mx-auto md:mx-0 leading-relaxed">
             Bringing delicious meals from Bemetara's best restaurants straight
             to your door.{" "}
             <span className="font-bold text-[#D92E2E]">
               Fast, Fresh & Reliable.
             </span>
           </p>
-          <div className="flex flex-wrap items-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-4">
             <button
               onClick={handleOrderNow}
-              className="h-14 px-10 bg-[#D92E2E] text-white rounded-full font-bold shadow-2xl hover:bg-[#b91c1c] transition-all duration-300 transform hover:scale-105 hover:shadow-[#D92E2E]/50 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto h-12 md:h-14 px-8 md:px-10 bg-[#D92E2E] text-white rounded-full font-bold shadow-2xl hover:bg-[#b91c1c] transition-all duration-300 transform hover:scale-105 hover:shadow-[#D92E2E]/50 flex items-center justify-center gap-2"
             >
               Order Now
               <svg
@@ -77,13 +83,13 @@ const FoodiePage = () => {
                 />
               </svg>
             </button>
-            <button className="h-14 px-8 bg-white/20 backdrop-blur-xl border border-white/40 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
+            <button className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 bg-white/20 backdrop-blur-xl border border-white/40 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
               How It Works
             </button>
           </div>
         </div>
-        <div className="flex-1 relative">
-          <div className="relative w-full h-[500px] md:h-[600px]">
+        <div className="flex-1 relative w-full mt-8 md:mt-0">
+          <div className="relative w-full h-[300px] md:h-[600px]">
             {/* Enhanced Background Blob with Gradient */}
             <div className="absolute top-0 right-0 w-[90%] h-[90%] bg-gradient-to-br from-yellow-400 via-orange-400 to-[#D92E2E] rounded-tl-[100px] rounded-bl-[50px] rounded-br-[50px] rounded-tr-[50px] -z-10 transform rotate-3 shadow-2xl animate-pulse"></div>
             <div className="absolute top-10 right-10 w-[85%] h-[85%] bg-white/10 backdrop-blur-sm rounded-tl-[90px] rounded-bl-[45px] rounded-br-[45px] rounded-tr-[45px] -z-5 transform rotate-6"></div>

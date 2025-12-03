@@ -92,6 +92,24 @@ export const restaurantsData: Restaurant[] = [
     deliveryTime: "25-35 min",
     minOrder: "₹120",
   },
+  {
+    id: "pizza-paradise",
+    name: "Pizza Paradise",
+    rating: "4.6",
+    reviews: "(320)",
+    price: "₹250–500",
+    type: "Italian",
+    address: "123 Food Street, Downtown Area",
+    status: "Open Now",
+    statusColor: "text-green-600",
+    features: "Dine-in · Takeaway · Delivery",
+    image: "/img/restaurant-img/Hotel Sapphire Restaurant.webp",
+    trending: true,
+    gradient: "from-red-500 to-orange-500",
+    category: ["Italian", "Pizza", "Pasta"],
+    deliveryTime: "30-40 min",
+    minOrder: "₹200",
+  },
 ];
 
 // Helper function to add new restaurant

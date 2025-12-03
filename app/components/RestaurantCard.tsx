@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Restaurant } from "../data/restaurants";
 
 interface RestaurantCardProps {
@@ -12,9 +13,18 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
   restaurant,
   onClick,
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(`/restaurant/${restaurant.id}`);
+    }
+  };
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className="group relative bg-white/15 backdrop-blur-xl border border-white/30 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 text-left flex flex-col h-full cursor-pointer hover:-translate-y-2"
     >
       {/* Gradient Background on Hover */}

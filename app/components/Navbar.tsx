@@ -3,11 +3,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import UserProfileMenu from "./UserProfileMenu";
-import ServicesSection from "./ServicesSection";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [isServicesOpen, setIsServicesOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -25,21 +23,6 @@ const Navbar = () => {
       window.removeEventListener("loginStateChange", checkLogin);
     };
   }, []);
-
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsServicesOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsServicesOpen(false);
-    }, 200);
-  };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -78,18 +61,9 @@ const Navbar = () => {
             <Link href="/order" className="hover:text-[#D92E2E] transition">
               Order
             </Link>
-            <div
-              className="relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <Link
-                href="/service"
-                className="hover:text-[#D92E2E] transition py-4"
-              >
-                Service
-              </Link>
-            </div>
+            <Link href="/service" className="hover:text-[#D92E2E] transition">
+              Service
+            </Link>
           </div>
 
           <a
@@ -127,19 +101,6 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
-
-        {/* Desktop Mega Menu */}
-        {isServicesOpen && (
-          <div
-            className="hidden md:block absolute top-full left-0 w-full pt-6 z-40 animate-in fade-in slide-in-from-top-5 duration-300"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div className="bg-white/90 backdrop-blur-3xl border border-white/40 rounded-3xl shadow-2xl overflow-hidden">
-              <ServicesSection />
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* Mobile Menu Slide-in */}
