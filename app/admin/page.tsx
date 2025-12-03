@@ -2,6 +2,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import DashboardView from "./components/DashboardView";
+import RestaurantsView from "./components/RestaurantsView";
+import RidersView from "./components/RidersView";
+import OrdersView from "./components/OrdersView";
+import MenuItemsView from "./components/MenuItemsView";
+import PaymentsView from "./components/PaymentsView";
+import UsersView from "./components/UsersView";
+import SettingsView from "./components/SettingsView";
 
 // Icons (Using SVGs for no dependencies)
 const Icons = {
@@ -163,42 +171,11 @@ const Icons = {
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>
   ),
-  TrendUp: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-green-500"
-    >
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-      <polyline points="17 6 23 6 23 12"></polyline>
-    </svg>
-  ),
-  TrendDown: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-red-500"
-    >
-      <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-      <polyline points="17 18 23 18 23 12"></polyline>
-    </svg>
-  ),
 };
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const sidebarItems = [
     { name: "Dashboard", icon: Icons.Dashboard },
@@ -211,92 +188,73 @@ const AdminPage = () => {
     { name: "Settings", icon: Icons.Settings },
   ];
 
-  const stats = [
-    {
-      title: "Total Orders",
-      value: "1,284",
-      change: "+12%",
-      trend: "up",
-      icon: Icons.Orders,
-    },
-    {
-      title: "Total Revenue",
-      value: "₹4,25,000",
-      change: "+8%",
-      trend: "up",
-      icon: Icons.Payments,
-    },
-    {
-      title: "Active Riders",
-      value: "45",
-      change: "-2%",
-      trend: "down",
-      icon: Icons.Riders,
-    },
-    {
-      title: "Active Restaurants",
-      value: "128",
-      change: "+5%",
-      trend: "up",
-      icon: Icons.Restaurants,
-    },
-  ];
-
-  const recentOrders = [
-    {
-      id: "#ORD-7782",
-      customer: "Priya Sharma",
-      restaurant: "Rasoi Restaurant",
-      amount: "₹450",
-      status: "Delivered",
-      time: "2 mins ago",
-    },
-    {
-      id: "#ORD-7781",
-      customer: "Rahul Verma",
-      restaurant: "Burger King",
-      amount: "₹280",
-      status: "Cooking",
-      time: "15 mins ago",
-    },
-    {
-      id: "#ORD-7780",
-      customer: "Amit Patel",
-      restaurant: "Pizza Hut",
-      amount: "₹890",
-      status: "On the way",
-      time: "25 mins ago",
-    },
-    {
-      id: "#ORD-7779",
-      customer: "Sneha Gupta",
-      restaurant: "Subway",
-      amount: "₹320",
-      status: "Cancelled",
-      time: "1 hour ago",
-    },
-    {
-      id: "#ORD-7778",
-      customer: "Vikram Singh",
-      restaurant: "Starbucks",
-      amount: "₹550",
-      status: "Delivered",
-      time: "2 hours ago",
-    },
-  ];
+  const renderContent = () => {
+    switch (activeTab) {
+      case "Dashboard":
+        return <DashboardView />;
+      case "Restaurants":
+        return <RestaurantsView />;
+      case "Riders":
+        return <RidersView />;
+      case "Orders":
+        return <OrdersView />;
+      case "Menu Items":
+        return <MenuItemsView />;
+      case "Payments":
+        return <PaymentsView />;
+      case "Users":
+        return <UsersView />;
+      case "Settings":
+        return <SettingsView />;
+      default:
+        return <DashboardView />;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#E59A01] flex font-sans text-white selection:bg-white/30">
+    <div className="min-h-screen bg-[#E59A01] flex font-sans text-white selection:bg-white/30 overflow-hidden">
+      {/* Mobile Menu Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white/10 backdrop-blur-xl border-r border-white/20 fixed h-full z-20 hidden md:flex flex-col shadow-2xl">
+      <aside
+        className={`w-64 bg-white/10 backdrop-blur-xl border-r border-white/20 fixed h-full z-40 shadow-2xl transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 flex flex-col`}
+      >
+        {/* Mobile Close Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="md:hidden absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <div className="p-8 flex items-center gap-3">
           {/* Logo */}
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#E59A01] font-bold text-xl shadow-lg">
-            D
-          </div>
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Deligro<span className="text-white/50">.</span>
-          </span>
+          <Link href="/">
+            <Image
+              src="/img/logo.png"
+              alt="Deligro Logo"
+              width={120}
+              height={36}
+              className="object-contain cursor-pointer"
+            />
+          </Link>
         </div>
 
         <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -335,24 +293,47 @@ const AdminPage = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-8">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 relative">
         {/* Header */}
-        <header className="flex justify-between items-center mb-10">
-          <div>
-            <h1 className="text-3xl font-bold text-white drop-shadow-sm">
-              Dashboard
-            </h1>
-            <p className="text-white/80 mt-1 font-medium">
-              Welcome back, here's what's happening today.
-            </p>
+        <header className="flex justify-between items-center mb-6 md:mb-10 relative z-10">
+          <div className="flex items-center gap-4">
+            {/* Mobile Hamburger Menu */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2.5 bg-white/10 rounded-xl border border-white/20 shadow-lg hover:bg-white/20 transition text-white backdrop-blur-sm"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow-sm">
+                {activeTab}
+              </h1>
+              <p className="text-white/80 mt-1 font-medium text-sm md:text-base hidden sm:block">
+                {activeTab === "Dashboard"
+                  ? "Welcome back, here's what's happening today."
+                  : `Manage your ${activeTab.toLowerCase()} efficiently`}
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="relative hidden md:block">
+          <div className="flex items-center gap-3 md:gap-6">
+            <div className="relative hidden sm:block">
               <input
                 type="text"
                 placeholder="Search..."
-                className="pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 w-64 shadow-lg backdrop-blur-sm"
+                className="pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 w-48 md:w-64 shadow-lg backdrop-blur-sm"
               />
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60">
                 <Icons.Search />
@@ -366,218 +347,8 @@ const AdminPage = () => {
           </div>
         </header>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {stats.map((stat, idx) => (
-            <div
-              key={idx}
-              className="bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all group"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div
-                  className={`p-3 rounded-2xl ${
-                    idx === 1
-                      ? "bg-green-400/20 text-green-300"
-                      : "bg-white/20 text-white"
-                  }`}
-                >
-                  <stat.icon />
-                </div>
-                <div
-                  className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${
-                    stat.trend === "up"
-                      ? "bg-green-400/20 text-green-300"
-                      : "bg-red-400/20 text-red-300"
-                  }`}
-                >
-                  {stat.trend === "up" ? (
-                    <Icons.TrendUp />
-                  ) : (
-                    <Icons.TrendDown />
-                  )}
-                  {stat.change}
-                </div>
-              </div>
-              <h3 className="text-white/70 text-sm font-medium mb-1">
-                {stat.title}
-              </h3>
-              <p className="text-2xl font-bold text-white">{stat.value}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Revenue Graph Section */}
-          <div className="lg:col-span-2 bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-xl font-bold text-white">
-                Revenue Analytics
-              </h2>
-              <select className="bg-white/10 border border-white/20 text-sm font-medium text-white rounded-lg px-3 py-1 focus:ring-0 cursor-pointer hover:bg-white/20 [&>option]:text-gray-800">
-                <option>This Week</option>
-                <option>This Month</option>
-                <option>This Year</option>
-              </select>
-            </div>
-
-            {/* Mock Graph */}
-            <div className="h-64 w-full relative flex items-end justify-between gap-2 px-2">
-              {/* Background Grid Lines */}
-              <div className="absolute inset-0 flex flex-col justify-between text-xs text-white/10 pointer-events-none">
-                <div className="border-b border-white/10 w-full h-0"></div>
-                <div className="border-b border-white/10 w-full h-0"></div>
-                <div className="border-b border-white/10 w-full h-0"></div>
-                <div className="border-b border-white/10 w-full h-0"></div>
-                <div className="border-b border-white/10 w-full h-0"></div>
-              </div>
-
-              {/* Bars/Line Mockup */}
-              {[40, 65, 45, 80, 55, 90, 70].map((height, i) => (
-                <div
-                  key={i}
-                  className="w-full bg-white/10 rounded-t-xl relative group cursor-pointer transition-all hover:bg-white/20 flex items-end"
-                >
-                  <div className="w-full bg-white rounded-t-xl transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.5)] opacity-90 h-full"></div>
-                  {/* Tooltip */}
-                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white text-[#E59A01] text-xs font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-lg">
-                    ₹{height * 1000}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-4 text-xs text-white/60 font-medium px-2">
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
-              <span>Sun</span>
-            </div>
-          </div>
-
-          {/* Notifications / Side Panel */}
-          <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20">
-            <h2 className="text-xl font-bold mb-6 text-white">Notifications</h2>
-            <div className="space-y-6">
-              {[
-                {
-                  title: "New Restaurant Request",
-                  desc: "Spicy Tandoor wants to join.",
-                  time: "10m ago",
-                  icon: "🏪",
-                  color: "bg-blue-400/20 text-blue-200",
-                },
-                {
-                  title: "High Demand Alert",
-                  desc: "Surge in orders in Sector 7.",
-                  time: "32m ago",
-                  icon: "🔥",
-                  color: "bg-red-400/20 text-red-200",
-                },
-                {
-                  title: "Rider Application",
-                  desc: "Rahul Kumar applied for rider.",
-                  time: "1h ago",
-                  icon: "🛵",
-                  color: "bg-green-400/20 text-green-200",
-                },
-                {
-                  title: "System Update",
-                  desc: "Maintenance scheduled at 2 AM.",
-                  time: "4h ago",
-                  icon: "⚙️",
-                  color: "bg-white/20 text-white",
-                },
-              ].map((notif, i) => (
-                <div key={i} className="flex gap-4 items-start">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 ${notif.color} backdrop-blur-sm`}
-                  >
-                    {notif.icon}
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">
-                      {notif.title}
-                    </h4>
-                    <p className="text-xs text-white/70 mt-0.5">{notif.desc}</p>
-                    <p className="text-[10px] text-white/40 mt-1 font-medium">
-                      {notif.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="w-full mt-8 py-3 rounded-xl border border-white/20 text-sm font-bold text-white hover:bg-white/10 transition">
-              View All
-            </button>
-          </div>
-        </div>
-
-        {/* Recent Orders Table */}
-        <div className="mt-8 bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-white">Recent Orders</h2>
-            <button className="text-white/80 text-sm font-bold hover:text-white hover:underline">
-              View All Orders
-            </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-xs font-bold text-white/50 uppercase tracking-wider border-b border-white/10">
-                  <th className="pb-4 pl-4">Order ID</th>
-                  <th className="pb-4">Customer</th>
-                  <th className="pb-4">Restaurant</th>
-                  <th className="pb-4">Amount</th>
-                  <th className="pb-4">Status</th>
-                  <th className="pb-4">Time</th>
-                  <th className="pb-4">Action</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm">
-                {recentOrders.map((order, i) => (
-                  <tr
-                    key={i}
-                    className="hover:bg-white/5 transition-colors group border-b border-white/5 last:border-0"
-                  >
-                    <td className="py-4 pl-4 font-medium text-white">
-                      {order.id}
-                    </td>
-                    <td className="py-4 font-medium text-white/90">
-                      {order.customer}
-                    </td>
-                    <td className="py-4 text-white/70">{order.restaurant}</td>
-                    <td className="py-4 font-bold text-white">
-                      {order.amount}
-                    </td>
-                    <td className="py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                          order.status === "Delivered"
-                            ? "bg-green-400/20 text-green-200"
-                            : order.status === "Cooking"
-                            ? "bg-orange-400/20 text-orange-200"
-                            : order.status === "On the way"
-                            ? "bg-blue-400/20 text-blue-200"
-                            : "bg-red-400/20 text-red-200"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-4 text-white/50 text-xs">{order.time}</td>
-                    <td className="py-4">
-                      <button className="text-white/50 hover:text-white transition">
-                        <Icons.Settings />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* Dynamic Content */}
+        <div className="relative">{renderContent()}</div>
       </main>
     </div>
   );
