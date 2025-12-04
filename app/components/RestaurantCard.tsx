@@ -299,7 +299,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
           {/* Categories Pills */}
           {restaurant.category && restaurant.category.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
-              {restaurant.category.map((cat, idx) => (
+              {restaurant.category.map((cat: string, idx: number) => (
                 <span
                   key={idx}
                   className="px-2 py-0.5 bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-full text-xs font-medium text-gray-700 dark:text-gray-300 border border-white/10"

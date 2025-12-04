@@ -10,6 +10,7 @@ import MenuItemsView from "./components/MenuItemsView";
 import PaymentsView from "./components/PaymentsView";
 import UsersView from "./components/UsersView";
 import SliderManagementView from "./components/SliderManagementView";
+import SettingsView from "./components/SettingsView";
 
 // Icons (Using SVGs for no dependencies)
 const Icons = {
