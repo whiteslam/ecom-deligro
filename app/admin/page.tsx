@@ -9,7 +9,7 @@ import OrdersView from "./components/OrdersView";
 import MenuItemsView from "./components/MenuItemsView";
 import PaymentsView from "./components/PaymentsView";
 import UsersView from "./components/UsersView";
-import SettingsView from "./components/SettingsView";
+import SliderManagementView from "./components/SliderManagementView";
 
 // Icons (Using SVGs for no dependencies)
 const Icons = {
@@ -28,6 +28,22 @@ const Icons = {
       <rect x="14" y="3" width="7" height="7"></rect>
       <rect x="14" y="14" width="7" height="7"></rect>
       <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+  ),
+  Slider: () => (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="3" y1="9" x2="21" y2="9"></line>
+      <line x1="9" y1="21" x2="9" y2="9"></line>
     </svg>
   ),
   Restaurants: () => (
@@ -179,6 +195,7 @@ const AdminPage = () => {
 
   const sidebarItems = [
     { name: "Dashboard", icon: Icons.Dashboard },
+    { name: "Slider Management", icon: Icons.Slider },
     { name: "Restaurants", icon: Icons.Restaurants },
     { name: "Riders", icon: Icons.Riders },
     { name: "Orders", icon: Icons.Orders },
@@ -192,6 +209,8 @@ const AdminPage = () => {
     switch (activeTab) {
       case "Dashboard":
         return <DashboardView />;
+      case "Slider Management":
+        return <SliderManagementView />;
       case "Restaurants":
         return <RestaurantsView />;
       case "Riders":

@@ -12,7 +12,14 @@ interface Slide {
   buttonLink: string;
 }
 
-const slides: Slide[] = [
+interface SliderSettings {
+  slides: Slide[];
+  interval: number;
+  showContent: boolean;
+  showButton: boolean;
+}
+
+const defaultSlides: Slide[] = [
   {
     id: 1,
     title: "Fast Delivery",
@@ -48,31 +55,49 @@ const slides: Slide[] = [
 export default function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [settings, setSettings] = useState<SliderSettings>({
+    slides: defaultSlides,
+    interval: 5,
+    showContent: true,
+    showButton: true,
+  });
 
-  // Auto-advance slides every 5 seconds
+  // Load settings and listen for changes
+  useEffect(() => {
+    const loadSettings = () => {
+      const savedSettings = localStorage.getItem("heroSliderSettings");
+      if (savedSettings) {
+        try {
+          const parsed = JSON.parse(savedSettings);
+          // Ensure we have valid slides, fallback to default if empty array (optional, but safer)
+          if (!parsed.slides || parsed.slides.length === 0) {
+            parsed.slides = defaultSlides;
+          }
+          setSettings(parsed);
+        } catch (e) {
+          console.error("Failed to parse slider settings", e);
+        }
+      }
+    };
+
+    loadSettings();
+
+    const handleSettingsChange = () => loadSettings();
+    window.addEventListener("sliderSettingsChanged", handleSettingsChange);
+
+    return () => {
+      window.removeEventListener("sliderSettingsChanged", handleSettingsChange);
+    };
+  }, []);
+
+  // Auto-advance slides
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+      setCurrentSlide((prev) => (prev + 1) % settings.slides.length);
+    }, settings.interval * 1000); // Use dynamic interval
 
     return () => clearInterval(timer);
-  }, []); // Remove currentSlide dependency to ensure consistent timing
-
-  const handleNext = () => {
-    if (!isAnimating) {
-      setIsAnimating(true);
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-      setTimeout(() => setIsAnimating(false), 500);
-    }
-  };
-
-  const handlePrev = () => {
-    if (!isAnimating) {
-      setIsAnimating(true);
-      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-      setTimeout(() => setIsAnimating(false), 500);
-    }
-  };
+  }, [settings.interval, settings.slides.length]);
 
   const goToSlide = (index: number) => {
     if (!isAnimating && index !== currentSlide) {
@@ -83,10 +108,10 @@ export default function HeroSlider() {
   };
 
   return (
-    <div className="relative w-full h-[250px] md:h-[320px] overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl">
+    <div className="relative w-full h-[250px] md:h-[350px] overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl">
       {/* Slides */}
       <div className="relative w-full h-full">
-        {slides.map((slide, index) => (
+        {settings.slides.map((slide, index) => (
           <div
             key={slide.id}
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
@@ -97,83 +122,60 @@ export default function HeroSlider() {
                 : "opacity-0 translate-x-full scale-95"
             }`}
           >
-            <div className="flex flex-col md:flex-row items-center justify-between h-full p-4 md:p-6">
-              {/* Content */}
-              <div className="flex-1 space-y-2 text-center md:text-left z-10">
-                <div className="space-y-1">
-                  <h3 className="text-xs md:text-sm font-semibold text-white/80 uppercase tracking-wider">
-                    {slide.title}
-                  </h3>
-                  <h2 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                    {slide.subtitle}
-                  </h2>
-                </div>
-                <p className="text-sm md:text-base text-white/90 max-w-md line-clamp-2">
-                  {slide.description}
-                </p>
-                <button className="px-4 py-2 bg-white text-[#E59A01] rounded-full font-bold text-sm hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
-                  {slide.buttonText}
-                </button>
+            <div className="relative w-full h-full">
+              {/* Background Image */}
+              <div className="absolute inset-0">
+                {slide.image.startsWith("/") && !slide.image.includes(".") ? (
+                  // Fallback for emoji placeholders
+                  <div className="w-full h-full bg-gradient-to-r from-orange-500 to-yellow-500 flex items-center justify-center">
+                    <span className="text-9xl opacity-20">
+                      {slide.id === 1 ? "🏍️" : slide.id === 2 ? "🍕" : "🎁"}
+                    </span>
+                  </div>
+                ) : (
+                  <Image
+                    src={slide.image}
+                    alt={slide.subtitle}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                  />
+                )}
+                {/* Gradient Overlay for Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
               </div>
 
-              {/* Image */}
-              <div className="flex-1 flex items-center justify-center mt-4 md:mt-0">
-                <div className="relative w-32 h-32 md:w-40 md:h-40 animate-float">
-                  <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl"></div>
-                  <div className="relative w-full h-full flex items-center justify-center text-5xl md:text-6xl">
-                    {slide.id === 1 ? "🏍️" : slide.id === 2 ? "🍕" : "🎁"}
+              {/* Content */}
+              {settings.showContent && (
+                <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10 md:px-16 max-w-3xl">
+                  <div className="space-y-1 md:space-y-2 animate-fade-in-up">
+                    <h3 className="text-xs sm:text-sm font-bold text-[#E59A01] uppercase tracking-widest">
+                      {slide.title}
+                    </h3>
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
+                      {slide.subtitle}
+                    </h2>
+                    <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-lg leading-relaxed drop-shadow-md line-clamp-2">
+                      {slide.description}
+                    </p>
+                    {settings.showButton && (
+                      <div className="pt-2">
+                        <button className="px-6 py-3 bg-[#E59A01] text-white rounded-full font-bold text-sm sm:text-base hover:bg-[#d08b01] transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
+                          {slide.buttonText}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={handlePrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 z-20 group"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="group-hover:-translate-x-1 transition-transform"
-        >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
-      </button>
-
-      <button
-        onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 z-20 group"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="group-hover:translate-x-1 transition-transform"
-        >
-          <path d="m9 18 6-6-6-6" />
-        </svg>
-      </button>
-
       {/* Dot Indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
-        {slides.map((_, index) => (
+        {settings.slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}

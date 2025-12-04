@@ -58,8 +58,14 @@ const Navbar = () => {
             <Link href="/" className="hover:text-[#D92E2E] transition">
               Home
             </Link>
-            <Link href="/order" className="hover:text-[#D92E2E] transition">
-              Order
+            <Link
+              href="/order"
+              className="hover:text-[#D92E2E] transition relative group"
+            >
+              OrderFOOD
+              <span className="absolute -top-3 -right-8 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                Now!!
+              </span>
             </Link>
             <Link href="/service" className="hover:text-[#D92E2E] transition">
               Service
@@ -149,7 +155,10 @@ const Navbar = () => {
                 onClick={closeMobileMenu}
                 className="block px-4 py-3 text-[#2B2B2B] dark:text-white font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
               >
-                🍽️ Order
+                🍽️ OrderFOOD
+                <span className="ml-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full inline-block">
+                  Now!!
+                </span>
               </Link>
               <Link
                 href="/service"

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,11 +8,21 @@ import Footer from "./Footer";
 import RestaurantCard from "./RestaurantCard";
 import HeroSlider from "./HeroSlider";
 import { restaurantsData } from "../data/restaurants";
-// import LocationPopup from "./LocationPopup";
+import SplashScreen from "./SplashScreen";
+
+// Global variable to track splash screen state across client-side navigations
+let hasShownSplash = false;
 
 const FoodiePage = () => {
   const router = useRouter();
+  // Initialize loading state based on whether splash has been shown in this memory session
+  const [isLoading, setIsLoading] = useState(!hasShownSplash);
   // const [showLocationPopup, setShowLocationPopup] = useState(false);
+
+  const handleSplashFinish = () => {
+    setIsLoading(false);
+    hasShownSplash = true;
+  };
 
   const handleOrderNow = () => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -24,25 +34,24 @@ const FoodiePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500 overflow-hidden">
+    <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pt-6 transition-colors duration-500 overflow-hidden relative">
+      {/* Splash Screen Overlay */}
+      {isLoading && <SplashScreen onFinish={handleSplashFinish} />}
+
       {/* Navbar */}
       <Navbar />
 
       {/* Hero Slider Section */}
-      <section className="px-4 md:px-8 py-6 max-w-7xl mx-auto">
+      <section className="px-4 md:px-8 pt-6 pb-2 max-w-7xl mx-auto">
         <HeroSlider />
       </section>
 
       {/* Hero Section with Animated Background */}
-      <header className="relative px-4 md:px-8 py-8 md:py-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      <header className="relative px-4 md:px-8 pt-2 pb-8 md:pb-12 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
         {/* Animated Gradient Orbs */}
         <div className="absolute top-20 left-10 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-60 md:w-80 h-60 md:h-80 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
-
         <div className="flex-1 space-y-4 md:space-y-6 z-10 text-center md:text-left">
-          <div className="inline-block px-4 md:px-5 py-2 bg-white/20 backdrop-blur-xl border border-white/40 text-white rounded-full shadow-2xl text-xs md:text-sm font-bold mb-2 hover:bg-white/30 transition-all duration-300">
-            ✨ More than Faster
-          </div>
           <h1 className="text-4xl md:text-7xl font-extrabold leading-tight text-[#2B2B2B] dark:text-white">
             Desire{" "}
             <span className="relative inline-block">
@@ -62,47 +71,53 @@ const FoodiePage = () => {
               Fast, Fresh & Reliable.
             </span>
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-4">
-            <button
-              onClick={handleOrderNow}
-              className="w-full sm:w-auto h-12 md:h-14 px-8 md:px-10 bg-[#D92E2E] text-white rounded-full font-bold shadow-2xl hover:bg-[#b91c1c] transition-all duration-300 transform hover:scale-105 hover:shadow-[#D92E2E]/50 flex items-center justify-center gap-2"
-            >
-              Order Now
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </button>
-            <button className="w-full sm:w-auto h-12 md:h-14 px-6 md:px-8 bg-white/20 backdrop-blur-xl border border-white/40 text-[#2B2B2B] dark:text-white rounded-full font-bold shadow-xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
-              How It Works
-            </button>
-          </div>
         </div>
-        <div className="flex-1 relative w-full mt-8 md:mt-0">
-          <div className="relative w-full h-[300px] md:h-[600px]">
-            {/* Enhanced Background Blob with Gradient */}
-            <div className="absolute top-0 right-0 w-[90%] h-[90%] bg-gradient-to-br from-yellow-400 via-orange-400 to-[#D92E2E] rounded-tl-[100px] rounded-bl-[50px] rounded-br-[50px] rounded-tr-[50px] -z-10 transform rotate-3 shadow-2xl animate-pulse"></div>
-            <div className="absolute top-10 right-10 w-[85%] h-[85%] bg-white/10 backdrop-blur-sm rounded-tl-[90px] rounded-bl-[45px] rounded-br-[45px] rounded-tr-[45px] -z-5 transform rotate-6"></div>
+        {/* Right Column: Interactive Cards */}
+        <div className="flex-1 w-full flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center md:justify-center mt-6 sm:mt-8 md:mt-0">
+          {/* Order Food Card */}
+          <div
+            onClick={() => router.push("/order")}
+            className="group relative flex-1 bg-white/10 backdrop-blur-xl border border-white/20 p-4 sm:p-5 md:p-6 rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl cursor-pointer hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-orange-500/20 min-h-[160px] sm:min-h-[200px] md:min-h-[260px] flex flex-col justify-between overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-orange-500 rounded-full flex items-center justify-center text-base sm:text-xl md:text-2xl mb-2 sm:mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                🍔
+              </div>
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1">
+                Order Food
+              </h3>
+              <p className="text-white/80 text-xs sm:text-sm leading-tight sm:leading-normal">
+                Hungry? Get hot & fresh meals delivered in minutes! 🚀
+              </p>
+            </div>
+            <div className="relative z-10 mt-2 sm:mt-4 flex items-center text-orange-400 font-bold text-xs sm:text-sm group-hover:translate-x-2 transition-transform">
+              Order Now <span className="ml-1 sm:ml-2">→</span>
+            </div>
+          </div>
 
-            <Image
-              src="/img/hero_image.png"
-              alt="Happy customer with pizza"
-              fill
-              className="object-contain z-10 drop-shadow-2xl"
-              priority
-            />
+          {/* Other Services Card */}
+          <div
+            onClick={() => router.push("/service")}
+            className="group relative flex-1 bg-white/10 backdrop-blur-xl border border-white/20 p-4 sm:p-5 md:p-6 rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl cursor-pointer hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-blue-500/20 min-h-[160px] sm:min-h-[200px] md:min-h-[260px] flex flex-col justify-between overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-500 rounded-full flex items-center justify-center text-base sm:text-xl md:text-2xl mb-2 sm:mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                📦
+              </div>
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1">
+                Other Services
+              </h3>
+              <p className="text-white/80 text-xs sm:text-sm leading-tight sm:leading-normal">
+                Package delivery, laundry, pharmacy & more.
+              </p>
+            </div>
+            <div className="relative z-10 mt-2 sm:mt-4 flex items-center text-blue-400 font-bold text-xs sm:text-sm group-hover:translate-x-2 transition-transform">
+              Explore <span className="ml-1 sm:ml-2">→</span>
+            </div>
           </div>
-        </div>
+        </div>{" "}
       </header>
 
       {/* Features Section with Enhanced Cards */}
@@ -178,11 +193,6 @@ const FoodiePage = () => {
                 </p>
 
                 {/* Feature Badge */}
-                <div className="relative mt-auto">
-                  <span className="px-4 py-1 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full text-xs font-medium text-[#2B2B2B] dark:text-gray-200 border border-white/20">
-                    Premium Service
-                  </span>
-                </div>
               </div>
             ))}
           </div>
@@ -195,11 +205,6 @@ const FoodiePage = () => {
         <div className="absolute top-0 left-1/4 w-80 h-80 bg-gradient-to-br from-[#D92E2E]/10 to-orange-400/10 rounded-full blur-3xl"></div>
 
         <div className="relative z-10">
-          <div className="inline-block mb-4">
-            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
-              🍽️ Featured Restaurants
-            </span>
-          </div>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
             Popular{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
@@ -238,11 +243,6 @@ const FoodiePage = () => {
             </div>
           </div>
           <div className="flex-1 space-y-8">
-            <div className="inline-block mb-2">
-              <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
-                💡 Why DELIGRO?
-              </span>
-            </div>
             <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white">
               Why People{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
@@ -310,11 +310,6 @@ const FoodiePage = () => {
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-orange-400/10 to-[#D92E2E]/10 rounded-full blur-3xl"></div>
 
         <div className="relative z-10">
-          <div className="inline-block mb-4">
-            <span className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-sm font-bold text-[#2B2B2B] dark:text-white shadow-lg">
-              ⭐ Customer Reviews
-            </span>
-          </div>
           <h2 className="text-4xl md:text-5xl font-extrabold text-[#2B2B2B] dark:text-white mb-4">
             Loved by Families{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
