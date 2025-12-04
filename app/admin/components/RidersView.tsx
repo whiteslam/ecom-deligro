@@ -196,9 +196,9 @@ const RidersView: React.FC = () => {
         </div>
       </div>
 
-      {/* Riders Table */}
       <div className="bg-white/10 backdrop-blur-md rounded-3xl shadow-xl border border-white/20 overflow-hidden relative z-10">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-bold text-white/50 uppercase tracking-wider border-b border-white/10 bg-white/5">
@@ -301,6 +301,100 @@ const RidersView: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4 space-y-4">
+          {filteredRiders.map((rider) => (
+            <div
+              key={rider.id}
+              className="bg-white/5 p-4 rounded-xl border border-white/10 space-y-3"
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
+                    🛵
+                  </div>
+                  <div>
+                    <p className="font-bold text-white">{rider.name}</p>
+                    <p className="text-xs text-white/50">
+                      Joined {rider.joinedDate}
+                    </p>
+                  </div>
+                </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
+                    rider.status === "Online"
+                      ? "bg-green-400/20 text-green-200"
+                      : rider.status === "Busy"
+                      ? "bg-yellow-400/20 text-yellow-200"
+                      : "bg-red-400/20 text-red-200"
+                  }`}
+                >
+                  {rider.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-xs text-white/50">Earnings</p>
+                  <p className="font-bold text-green-300">{rider.earnings}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/50">Rating</p>
+                  <p className="text-white flex items-center gap-1">
+                    <span className="text-yellow-400">⭐</span> {rider.rating}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/50">Deliveries</p>
+                  <p className="text-white font-bold">{rider.deliveries}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/50">Location</p>
+                  <p className="text-white">📍 {rider.location}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-white/50">Contact</p>
+                  <p className="text-white/70">{rider.phone}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-white/50">Vehicle</p>
+                  <p className="text-white/70">{rider.vehicle}</p>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-white/10 flex justify-end gap-2">
+                <button className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition text-white">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition text-white">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

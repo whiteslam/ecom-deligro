@@ -27,7 +27,7 @@ const SplashScreen = ({ onFinish }: { onFinish?: () => void }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-[#E59A01] to-[#D92E2E] overflow-hidden transition-all duration-1000 ease-in-out ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-[#E59A01] to-[#D92E2E] overflow-hidden transition-all duration-1000 ease-in-out lg:hidden ${
         isExiting
           ? "opacity-0 scale-110 pointer-events-none"
           : "opacity-100 scale-100"

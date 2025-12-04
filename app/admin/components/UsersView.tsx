@@ -117,30 +117,38 @@ const UsersView: React.FC = () => {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-            <p className="text-white/70 text-sm font-medium mb-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-white/20">
+            <p className="text-white/70 text-xs md:text-sm font-medium mb-1 truncate">
               Total Users
             </p>
-            <p className="text-white text-3xl font-bold">{stats.total}</p>
+            <p className="text-white text-xl md:text-3xl font-bold truncate">
+              {stats.total}
+            </p>
           </div>
-          <div className="bg-green-400/10 backdrop-blur-md p-6 rounded-2xl border border-green-400/20">
-            <p className="text-green-200 text-sm font-medium mb-1">
+          <div className="bg-green-400/10 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-green-400/20">
+            <p className="text-green-200 text-xs md:text-sm font-medium mb-1 truncate">
               Active Users
             </p>
-            <p className="text-white text-3xl font-bold">{stats.active}</p>
+            <p className="text-white text-xl md:text-3xl font-bold truncate">
+              {stats.active}
+            </p>
           </div>
-          <div className="bg-red-400/10 backdrop-blur-md p-6 rounded-2xl border border-red-400/20">
-            <p className="text-red-200 text-sm font-medium mb-1">
+          <div className="bg-red-400/10 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-red-400/20">
+            <p className="text-red-200 text-xs md:text-sm font-medium mb-1 truncate">
               Inactive Users
             </p>
-            <p className="text-white text-3xl font-bold">{stats.inactive}</p>
+            <p className="text-white text-xl md:text-3xl font-bold truncate">
+              {stats.inactive}
+            </p>
           </div>
-          <div className="bg-blue-400/10 backdrop-blur-md p-6 rounded-2xl border border-blue-400/20">
-            <p className="text-blue-200 text-sm font-medium mb-1">
+          <div className="bg-blue-400/10 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-blue-400/20">
+            <p className="text-blue-200 text-xs md:text-sm font-medium mb-1 truncate">
               Total Orders
             </p>
-            <p className="text-white text-3xl font-bold">{stats.totalOrders}</p>
+            <p className="text-white text-xl md:text-3xl font-bold truncate">
+              {stats.totalOrders}
+            </p>
           </div>
         </div>
 

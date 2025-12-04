@@ -2,8 +2,8 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="px-8 py-12 max-w-7xl mx-auto border-t border-gray-200 mt-12">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
+    <footer className="px-8 py-12 max-w-7xl mx-auto border-t border-gray-200 mt-0">
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
         <div className="col-span-1">
           <Image
             src="/img/logo.png"
@@ -52,7 +52,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/restaurant" className="hover:text-[#D92E2E]">
+              <a href="/partner" className="hover:text-[#D92E2E]">
                 Partner with us
               </a>
             </li>
@@ -165,24 +165,26 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-white text-sm">
-          © 2026 Deligro(Phoxera Solutions Private Limited). All rights
-          reserved.
+      <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4 w-full mt-4">
+        <p className="text-white/80 text-xs text-center md:text-left leading-relaxed">
+          © 2026 Deligro (Phoxera Solutions Private Limited).
+          <span className="block sm:inline"> All rights reserved.</span>
         </p>
-        <p className="text-xs text-white font-light tracking-widest uppercase opacity-70 hover:opacity-100 transition-all duration-300">
-          <span className="cursor-default">
+        <div className="text-[10px] md:text-xs text-white/70 font-light tracking-widest uppercase transition-all duration-300 text-center md:text-right flex flex-col sm:flex-row items-center gap-1 sm:gap-0">
+          <span className="group cursor-default hover:text-white transition-colors">
             Designed & Developed by{" "}
-            <span className="font-medium text-white">Gaurav Mirjha</span>
+            <span className="font-medium text-white group-hover:text-[#D92E2E] transition-colors">
+              Gaurav Mirjha
+            </span>
           </span>
-          <span className="mx-2 opacity-50">|</span>
+          <span className="hidden sm:inline mx-2 opacity-50">|</span>
           <a
             href="#"
             className="hover:text-white hover:underline transition-colors"
           >
             Contact Developer
           </a>
-        </p>
+        </div>
       </div>
     </footer>
   );

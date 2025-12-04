@@ -108,7 +108,7 @@ export default function HeroSlider() {
   };
 
   return (
-    <div className="relative w-full h-[250px] md:h-[350px] overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl">
+    <div className="relative w-full h-[180px] md:h-[350px] overflow-hidden rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl">
       {/* Slides */}
       <div className="relative w-full h-full">
         {settings.slides.map((slide, index) => (
@@ -147,20 +147,20 @@ export default function HeroSlider() {
 
               {/* Content */}
               {settings.showContent && (
-                <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10 md:px-16 max-w-3xl">
+                <div className="relative z-10 h-full flex flex-col justify-center px-4 sm:px-10 md:px-16 max-w-3xl">
                   <div className="space-y-1 md:space-y-2 animate-fade-in-up">
-                    <h3 className="text-xs sm:text-sm font-bold text-[#E59A01] uppercase tracking-widest">
+                    <h3 className="text-[10px] sm:text-sm font-bold text-[#E59A01] uppercase tracking-widest">
                       {slide.title}
                     </h3>
-                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
+                    <h2 className="text-xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
                       {slide.subtitle}
                     </h2>
-                    <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-lg leading-relaxed drop-shadow-md line-clamp-2">
+                    <p className="text-xs sm:text-base md:text-lg text-white/90 max-w-lg leading-relaxed drop-shadow-md line-clamp-2">
                       {slide.description}
                     </p>
                     {settings.showButton && (
                       <div className="pt-2">
-                        <button className="px-6 py-3 bg-[#E59A01] text-white rounded-full font-bold text-sm sm:text-base hover:bg-[#d08b01] transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
+                        <button className="px-4 py-2 md:px-6 md:py-3 bg-[#E59A01] text-white rounded-full font-bold text-xs sm:text-base hover:bg-[#d08b01] transition-all duration-300 shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1">
                           {slide.buttonText}
                         </button>
                       </div>

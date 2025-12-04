@@ -204,28 +204,28 @@ const DashboardView: React.FC<DashboardViewProps> = () => {
       <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 relative z-10">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 relative z-10">
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
+            className="group relative bg-white/10 backdrop-blur-md p-4 md:p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
           >
             {/* Gradient Background on Hover */}
             <div
               className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-500`}
             ></div>
 
-            <div className="flex justify-between items-start mb-4 relative">
+            <div className="flex justify-between items-start mb-2 md:mb-4 relative">
               <div className="relative">
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} rounded-2xl blur-lg opacity-0 group-hover:opacity-70 transition-opacity duration-300`}
                 ></div>
-                <div className="relative p-3 rounded-2xl bg-white/20 text-white">
+                <div className="relative p-2 md:p-3 rounded-2xl bg-white/20 text-white">
                   <stat.icon />
                 </div>
               </div>
               <div
-                className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${
+                className={`flex items-center gap-1 text-[10px] md:text-xs font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full ${
                   stat.trend === "up"
                     ? "bg-green-400/20 text-green-300"
                     : "bg-red-400/20 text-red-300"
@@ -235,19 +235,19 @@ const DashboardView: React.FC<DashboardViewProps> = () => {
                 {stat.change}
               </div>
             </div>
-            <h3 className="text-white/70 text-sm font-medium mb-1 relative">
+            <h3 className="text-white/70 text-xs md:text-sm font-medium mb-0.5 md:mb-1 relative truncate">
               {stat.title}
             </h3>
-            <p className="text-2xl font-bold text-white relative">
+            <p className="text-lg md:text-2xl font-bold text-white relative truncate">
               {stat.value}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
         {/* Revenue Graph Section */}
-        <div className="lg:col-span-2 bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20">
+        <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20 h-full">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold text-white">Revenue Analytics</h2>
             <select className="bg-white/10 border border-white/20 text-sm font-medium text-white rounded-lg px-3 py-1 focus:ring-0 cursor-pointer hover:bg-white/20 [&>option]:text-gray-800">
@@ -294,124 +294,121 @@ const DashboardView: React.FC<DashboardViewProps> = () => {
           </div>
         </div>
 
-        {/* Notifications / Side Panel */}
-        <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20">
-          <h2 className="text-xl font-bold mb-6 text-white">Notifications</h2>
-          <div className="space-y-6">
-            {[
-              {
-                title: "New Restaurant Request",
-                desc: "Spicy Tandoor wants to join.",
-                time: "10m ago",
-                icon: "🏪",
-                color: "bg-blue-400/20 text-blue-200",
-              },
-              {
-                title: "High Demand Alert",
-                desc: "Surge in orders in Sector 7.",
-                time: "32m ago",
-                icon: "🔥",
-                color: "bg-red-400/20 text-red-200",
-              },
-              {
-                title: "Rider Application",
-                desc: "Rahul Kumar applied for rider.",
-                time: "1h ago",
-                icon: "🛵",
-                color: "bg-green-400/20 text-green-200",
-              },
-              {
-                title: "System Update",
-                desc: "Maintenance scheduled at 2 AM.",
-                time: "4h ago",
-                icon: "⚙️",
-                color: "bg-white/20 text-white",
-              },
-            ].map((notif, i) => (
-              <div key={i} className="flex gap-4 items-start">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 ${notif.color} backdrop-blur-sm`}
-                >
-                  {notif.icon}
+        {/* Recent Orders Section */}
+        <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20 h-full flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-white">Recent Orders</h2>
+            <button className="text-white/80 text-sm font-bold hover:text-white hover:underline">
+              View All
+            </button>
+          </div>
+
+          {/* Desktop Table View (Hidden on Mobile) */}
+          <div className="hidden md:block overflow-x-auto flex-1">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-xs font-bold text-white/50 uppercase tracking-wider border-b border-white/10">
+                  <th className="pb-4 pl-4">Order ID</th>
+                  <th className="pb-4">Customer</th>
+                  <th className="pb-4">Amount</th>
+                  <th className="pb-4">Status</th>
+                  <th className="pb-4">Action</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                {recentOrders.map((order, i) => (
+                  <tr
+                    key={i}
+                    className="hover:bg-white/5 transition-colors group border-b border-white/5 last:border-0"
+                  >
+                    <td className="py-4 pl-4 font-medium text-white">
+                      {order.id}
+                    </td>
+                    <td className="py-4 font-medium text-white/90">
+                      {order.customer}
+                    </td>
+                    <td className="py-4 font-bold text-white">
+                      {order.amount}
+                    </td>
+                    <td className="py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
+                          order.status === "Delivered"
+                            ? "bg-green-400/20 text-green-200"
+                            : order.status === "Cooking"
+                            ? "bg-orange-400/20 text-orange-200"
+                            : order.status === "On the way"
+                            ? "bg-blue-400/20 text-blue-200"
+                            : "bg-red-400/20 text-red-200"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="py-4">
+                      <button className="text-white/50 hover:text-white transition">
+                        <Icons.Settings />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View (Minimal Swiggy Style) */}
+          <div className="md:hidden flex flex-col gap-[12px]">
+            {recentOrders.map((order, i) => (
+              <div
+                key={i}
+                className="bg-white/12 backdrop-blur-sm p-[14px] rounded-2xl shadow-sm border border-white/5 flex flex-col gap-3"
+              >
+                {/* Header: ID, Time, Amount */}
+                <div className="flex justify-between items-start">
+                  <div className="flex flex-col">
+                    <span className="text-white font-bold text-sm tracking-wide">
+                      {order.id}
+                    </span>
+                    <span className="text-white/50 text-[10px] font-medium mt-0.5">
+                      {order.time}
+                    </span>
+                  </div>
+                  <span className="text-white font-bold text-base">
+                    {order.amount}
+                  </span>
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white">
-                    {notif.title}
+
+                {/* Body: Restaurant & Customer */}
+                <div className="flex flex-col gap-0.5">
+                  <h4 className="text-white/90 text-sm font-medium leading-tight">
+                    {order.restaurant}
                   </h4>
-                  <p className="text-xs text-white/70 mt-0.5">{notif.desc}</p>
-                  <p className="text-[10px] text-white/40 mt-1 font-medium">
-                    {notif.time}
-                  </p>
+                  <p className="text-white/60 text-xs">{order.customer}</p>
+                </div>
+
+                {/* Footer: Status & Action */}
+                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                  <span
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide ${
+                      order.status === "Delivered"
+                        ? "bg-green-500/20 text-green-100"
+                        : order.status === "Cooking"
+                        ? "bg-orange-500/20 text-orange-100"
+                        : order.status === "On the way"
+                        ? "bg-blue-500/20 text-blue-100"
+                        : "bg-red-500/20 text-red-100"
+                    }`}
+                  >
+                    {order.status.toUpperCase()}
+                  </span>
+
+                  <button className="text-white/70 hover:text-white transition p-1">
+                    <Icons.Settings />
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full mt-8 py-3 rounded-xl border border-white/20 text-sm font-bold text-white hover:bg-white/10 transition">
-            View All
-          </button>
-        </div>
-      </div>
-
-      {/* Recent Orders Table */}
-      <div className="mt-8 bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/20 relative z-10">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-white">Recent Orders</h2>
-          <button className="text-white/80 text-sm font-bold hover:text-white hover:underline">
-            View All Orders
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-xs font-bold text-white/50 uppercase tracking-wider border-b border-white/10">
-                <th className="pb-4 pl-4">Order ID</th>
-                <th className="pb-4">Customer</th>
-                <th className="pb-4">Restaurant</th>
-                <th className="pb-4">Amount</th>
-                <th className="pb-4">Status</th>
-                <th className="pb-4">Time</th>
-                <th className="pb-4">Action</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {recentOrders.map((order, i) => (
-                <tr
-                  key={i}
-                  className="hover:bg-white/5 transition-colors group border-b border-white/5 last:border-0"
-                >
-                  <td className="py-4 pl-4 font-medium text-white">
-                    {order.id}
-                  </td>
-                  <td className="py-4 font-medium text-white/90">
-                    {order.customer}
-                  </td>
-                  <td className="py-4 text-white/70">{order.restaurant}</td>
-                  <td className="py-4 font-bold text-white">{order.amount}</td>
-                  <td className="py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                        order.status === "Delivered"
-                          ? "bg-green-400/20 text-green-200"
-                          : order.status === "Cooking"
-                          ? "bg-orange-400/20 text-orange-200"
-                          : order.status === "On the way"
-                          ? "bg-blue-400/20 text-blue-200"
-                          : "bg-red-400/20 text-red-200"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="py-4 text-white/50 text-xs">{order.time}</td>
-                  <td className="py-4">
-                    <button className="text-white/50 hover:text-white transition">
-                      <Icons.Settings />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
