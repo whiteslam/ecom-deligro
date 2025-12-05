@@ -2,9 +2,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import UserProfileMenu from "./UserProfileMenu";
 
 const Navbar = () => {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -110,7 +113,11 @@ const Navbar = () => {
         {/* Mobile: Notification & Location (Right) */}
         <div className="md:hidden flex items-center gap-3">
           {/* Location Display (Compact) */}
-          <div className="flex items-center gap-1 text-white/90 text-xs font-medium bg-white/10 px-2 py-1 rounded-full border border-white/20 backdrop-blur-sm">
+          <div
+            className={`flex items-center gap-1 text-white/90 text-xs font-medium bg-white/10 px-2 py-1 rounded-full border border-white/20 backdrop-blur-sm ${
+              isHomePage ? "hidden" : ""
+            }`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -144,6 +151,13 @@ const Navbar = () => {
             </svg>
             <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-white/50"></span>
           </button>
+
+          {/* User Profile (Mobile Home Only) */}
+          {isHomePage && (
+            <div className="block">
+              <UserProfileMenu isLoggedIn={isLoggedIn} />
+            </div>
+          )}
         </div>
       </nav>
 

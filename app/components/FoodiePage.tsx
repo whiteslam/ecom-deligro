@@ -77,48 +77,251 @@ const FoodiePage = () => {
           </p>
         </div>
         {/* Right Column: Interactive Cards */}
-        <div className="flex-1 w-full grid grid-cols-2 sm:flex sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center md:justify-center mt-4 sm:mt-8 md:mt-0">
+        <div className="flex-1 w-full grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 justify-center mt-4 sm:mt-8 md:mt-0">
           {/* Order Food Card */}
           <div
             onClick={() => router.push("/order")}
-            className="group relative flex-1 bg-white/10 backdrop-blur-xl border border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl cursor-pointer hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-orange-500/20 min-h-[140px] sm:min-h-[200px] md:min-h-[260px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-orange-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-orange-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-orange-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
             <div className="relative z-10">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-orange-500 rounded-full flex items-center justify-center text-sm sm:text-xl md:text-2xl mb-2 sm:mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                🍔
-              </div>
-              <h3 className="text-sm sm:text-lg md:text-xl font-bold text-white mb-0.5 sm:mb-1">
-                Order Food
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                Order
+                <br />
+                Food
               </h3>
-              <p className="text-white/80 text-[10px] sm:text-sm leading-tight sm:leading-normal line-clamp-2">
-                Hungry? Get hot & fresh meals delivered! 🚀
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Cravings? Solved.</span>
+                <span className="hidden md:inline">Hot & fresh meals!</span>
               </p>
             </div>
-            <div className="relative z-10 mt-2 sm:mt-4 flex items-center text-orange-400 font-bold text-[10px] sm:text-sm group-hover:translate-x-2 transition-transform">
-              Order Now <span className="ml-1 sm:ml-2">→</span>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-orange-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-orange-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                🍔
+              </div>
+              <span className="hidden md:inline ml-2">Order Now →</span>
             </div>
           </div>
 
-          {/* Other Services Card */}
+          {/* Pick & Drop */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative flex-1 bg-white/10 backdrop-blur-xl border border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl cursor-pointer hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-blue-500/20 min-h-[140px] sm:min-h-[200px] md:min-h-[260px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-blue-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-blue-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-blue-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
             <div className="relative z-10">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-500 rounded-full flex items-center justify-center text-sm sm:text-xl md:text-2xl mb-2 sm:mb-3 md:mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                📦
-              </div>
-              <h3 className="text-sm sm:text-lg md:text-xl font-bold text-white mb-0.5 sm:mb-1">
-                Other Services
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                Pick &<br />
+                Drop
               </h3>
-              <p className="text-white/80 text-[10px] sm:text-sm leading-tight sm:leading-normal line-clamp-2">
-                Package delivery, laundry & more.
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Anything, Anywhere.</span>
+                <span className="hidden md:inline">People & Parcels</span>
               </p>
             </div>
-            <div className="relative z-10 mt-2 sm:mt-4 flex items-center text-blue-400 font-bold text-[10px] sm:text-sm group-hover:translate-x-2 transition-transform">
-              Explore <span className="ml-1 sm:ml-2">→</span>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-blue-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-blue-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                📦
+              </div>
+              <span className="hidden md:inline ml-2">Book Now →</span>
+            </div>
+          </div>
+
+          {/* Grocery */}
+          <div
+            onClick={() => router.push("/service")}
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-green-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-green-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-green-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                Grocery
+              </h3>
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Fresh & Fast.</span>
+                <span className="hidden md:inline">Daily essentials</span>
+              </p>
+            </div>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-green-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-green-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                🥦
+              </div>
+              <span className="hidden md:inline ml-2">Shop Now →</span>
+            </div>
+          </div>
+
+          {/* Medicine */}
+          <div
+            onClick={() => router.push("/service")}
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-red-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-red-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+          >
+            {/* Emergency Tag */}
+            <div className="hidden md:block absolute top-0 right-0 bg-red-600 text-white text-[10px] sm:text-[10px] font-bold px-3 py-1 rounded-bl-2xl rounded-tr-[2rem] z-20 animate-pulse shadow-md">
+              EMERGENCY
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-red-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                Medicine
+              </h3>
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Health First.</span>
+                <span className="hidden md:inline">Fast delivery</span>
+              </p>
+            </div>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-red-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-red-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                💊
+              </div>
+              <span className="hidden md:inline ml-2">Order Now →</span>
+            </div>
+          </div>
+
+          {/* Book Hotels */}
+          <div
+            onClick={() => router.push("/service")}
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-purple-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-purple-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-purple-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                Hotels
+              </h3>
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Stay in Style.</span>
+                <span className="hidden md:inline">Book stay</span>
+              </p>
+            </div>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-purple-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-purple-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                🏨
+              </div>
+              <span className="hidden md:inline ml-2">Book Now →</span>
+            </div>
+          </div>
+
+          {/* Other Services */}
+          <div
+            onClick={() => router.push("/service")}
+            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-gray-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-gray-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            {/* Mobile Arrow */}
+            <div className="absolute top-5 right-5 md:hidden text-gray-500/50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.25 3.75H19.5a.75.75 0 01.75.75v11.25a.75.75 0 01-1.5 0V6.31L5.03 20.03a.75.75 0 01-1.06-1.06L17.69 5.25H8.25a.75.75 0 010-1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+                More
+              </h3>
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+                <span className="md:hidden">Discover All.</span>
+                <span className="hidden md:inline">Explore all</span>
+              </p>
+            </div>
+            <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-gray-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
+              <div className="text-[5rem] md:text-xl md:bg-gray-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                ✨
+              </div>
+              <span className="hidden md:inline ml-2">View All →</span>
             </div>
           </div>
         </div>{" "}
