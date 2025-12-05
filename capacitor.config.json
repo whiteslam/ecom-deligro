@@ -1,5 +1,6 @@
 {
-  "appId": "com.nextgen.app",
-  "appName": "deligro",
-  "webDir": "out"
+  "appId": "com.deligro.app",
+  "appName": "Deligro",
+  "webDir": "out",
+  "bundledWebRuntime": false
 }
