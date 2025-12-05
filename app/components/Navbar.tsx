@@ -107,9 +107,43 @@ const Navbar = () => {
           <UserProfileMenu isLoggedIn={isLoggedIn} />
         </div>
 
-        {/* Mobile: User Profile (Right) */}
-        <div className="md:hidden">
-          <UserProfileMenu isLoggedIn={isLoggedIn} />
+        {/* Mobile: Notification & Location (Right) */}
+        <div className="md:hidden flex items-center gap-3">
+          {/* Location Display (Compact) */}
+          <div className="flex items-center gap-1 text-white/90 text-xs font-medium bg-white/10 px-2 py-1 rounded-full border border-white/20 backdrop-blur-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-3 h-3 text-[#D92E2E]"
+            >
+              <path
+                fillRule="evenodd"
+                d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="truncate max-w-[80px]">Bemetara</span>
+          </div>
+
+          {/* Notification Icon */}
+          <button className="relative w-8 h-8 bg-white/15 backdrop-blur-2xl border border-white/30 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-white/30 transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+              />
+            </svg>
+            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-white/50"></span>
+          </button>
         </div>
       </nav>
 

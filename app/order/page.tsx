@@ -90,132 +90,60 @@ const OrderPage = () => {
     <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pb-24 transition-colors duration-500 overflow-x-hidden">
       {/* ==================== MOBILE LAYOUT (md:hidden) ==================== */}
       <div className="md:hidden relative">
+        <Navbar />
         {/* Animated Background Orbs */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
         <div className="absolute bottom-20 right-10 w-60 h-60 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s] pointer-events-none"></div>
 
-        {/* Mobile Header */}
-        <header className="sticky top-0 z-50 bg-[#E59A01] dark:bg-gray-900 shadow-sm px-4 pt-4 pb-2 transition-all duration-300">
+        {/* Mobile Header - Sticky & Glassmorphic */}
+        <header className="sticky top-0 z-30 bg-[#E59A01]/90 backdrop-blur-lg shadow-lg px-4 pt-4 pb-3 transition-all duration-300 border-b border-white/10">
           <div className="flex justify-between items-start mb-4">
-            {/* Location Section */}
-            <div
-              className="flex flex-col max-w-[70%] cursor-pointer"
-              onClick={() => router.push("/location")}
-            >
-              <div className="flex items-center gap-1 text-white font-bold text-lg drop-shadow-md">
+            {/* Search Bar & Toggle */}
+            <div className="flex items-center gap-3 mt-1">
+              <div className="flex-1 relative group">
+                <input
+                  type="text"
+                  placeholder="Search 'Biryani'..."
+                  className="w-full pl-11 pr-4 py-3.5 bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-white/40 focus:bg-white/20 placeholder-white/70 text-white transition-all shadow-inner"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-5 h-5"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/90 group-focus-within:scale-110 transition-transform"
                 >
                   <path
                     fillRule="evenodd"
-                    d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                    d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
                     clipRule="evenodd"
-                  />
-                </svg>
-                <span className="truncate">{locationName}</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="w-4 h-4 text-white/80"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
                   />
                 </svg>
               </div>
-              <p className="text-xs text-white/80 truncate pl-6">
-                {addressLine}
-              </p>
-            </div>
-
-            {/* User Icons */}
-            <div className="flex items-center gap-3">
-              <button className="p-2 rounded-full hover:bg-white/10 transition">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-white"
+              {/* Veg/Non-Veg Toggle */}
+              <div className="flex items-center gap-1 bg-white/15 backdrop-blur-xl p-1.5 rounded-xl border border-white/25 shadow-sm">
+                <button
+                  className={`text-[10px] font-extrabold px-3 py-2 rounded-lg transition-all active:scale-95 ${
+                    !isVegMode
+                      ? "bg-white text-[#E59A01] shadow-md scale-105"
+                      : "text-white/80 hover:bg-white/10"
+                  }`}
+                  onClick={() => setIsVegMode(false)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
-                  />
-                </svg>
-              </button>
-              <button className="w-8 h-8 rounded-full bg-white/20 overflow-hidden border border-white/30">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-full h-full text-white"
+                  ALL
+                </button>
+                <button
+                  className={`text-[10px] font-extrabold px-3 py-2 rounded-lg transition-all active:scale-95 ${
+                    isVegMode
+                      ? "bg-green-500 text-white shadow-md scale-105"
+                      : "text-white/80 hover:bg-white/10"
+                  }`}
+                  onClick={() => setIsVegMode(true)}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Search Bar & Toggle */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Search 'momos'"
-                className="w-full pl-10 pr-4 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl text-sm font-medium focus:ring-2 focus:ring-white/50 placeholder-white/70 text-white"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            {/* Veg/Non-Veg Toggle */}
-            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md p-1 rounded-lg border border-white/30">
-              <span
-                className={`text-[10px] font-bold px-2 py-1.5 rounded-md transition-all cursor-pointer ${
-                  !isVegMode
-                    ? "bg-white text-[#E59A01] shadow-sm"
-                    : "text-white/70"
-                }`}
-                onClick={() => setIsVegMode(false)}
-              >
-                ALL
-              </span>
-              <span
-                className={`text-[10px] font-bold px-2 py-1.5 rounded-md transition-all cursor-pointer ${
-                  isVegMode
-                    ? "bg-green-500 text-white shadow-sm"
-                    : "text-white/70"
-                }`}
-                onClick={() => setIsVegMode(true)}
-              >
-                VEG
-              </span>
+                  VEG
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -311,11 +239,11 @@ const OrderPage = () => {
                 {filteredRestaurants.map((restaurant) => (
                   <div
                     key={restaurant.id}
-                    className="flex gap-4 bg-white dark:bg-gray-800 p-3 rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    className="flex gap-4 p-3 rounded-[1.5rem] transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-md border border-white/20 shadow-lg"
                     onClick={() => router.push(`/restaurant/${restaurant.id}`)}
                   >
                     {/* Left: Image Card */}
-                    <div className="relative w-28 h-32 shrink-0 rounded-[1.25rem] overflow-hidden shadow-md">
+                    <div className="relative w-28 h-32 shrink-0 rounded-[1.25rem] overflow-hidden shadow-md border border-white/20">
                       <Image
                         src={restaurant.image}
                         alt={restaurant.name}
@@ -323,24 +251,18 @@ const OrderPage = () => {
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                      {/* Pricing Tag */}
-                      <div className="absolute bottom-0 left-0 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-tr-xl shadow-sm">
-                        <span className="text-[9px] font-extrabold text-gray-900 uppercase tracking-wider">
-                          ITEMS AT ₹99
-                        </span>
-                      </div>
                     </div>
 
                     {/* Right: Info */}
-                    <div className="flex flex-col flex-1 justify-between py-0.5">
+                    <div className="flex flex-col flex-1 justify-center gap-1.5 h-32">
                       {/* Category Badge */}
-                      <div className="flex items-start">
-                        <span className="text-[10px] font-bold text-orange-600 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400 px-2 py-0.5 rounded-md flex items-center gap-1">
-                          {restaurant.type === "Veg"
-                            ? "🌿 Pure Veg"
-                            : "🏆 Best in Class"}
-                        </span>
-                      </div>
+                      {restaurant.type === "Veg" && (
+                        <div className="flex items-start">
+                          <span className="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            🌿 Pure Veg
+                          </span>
+                        </div>
+                      )}
 
                       {/* Name */}
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight line-clamp-1">
@@ -376,7 +298,7 @@ const OrderPage = () => {
                       </div>
 
                       {/* Cuisine & Location */}
-                      <div className="mt-1">
+                      <div>
                         <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate leading-tight">
                           {restaurant.category?.slice(0, 3).join(", ")}
                         </p>
