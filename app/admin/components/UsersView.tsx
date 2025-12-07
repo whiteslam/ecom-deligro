@@ -1,91 +1,60 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 const UsersView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const users = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      email: "priya.sharma@email.com",
-      phone: "+91 98765 43210",
-      type: "Customer",
-      orders: 45,
-      totalSpent: "₹12,450",
-      joinedDate: "Jan 2023",
-      status: "Active",
-      avatar: "👩",
-    },
-    {
-      id: 2,
-      name: "Rahul Verma",
-      email: "rahul.verma@email.com",
-      phone: "+91 98765 43211",
-      type: "Customer",
-      orders: 32,
-      totalSpent: "₹8,960",
-      joinedDate: "Feb 2023",
-      status: "Active",
-      avatar: "👨",
-    },
-    {
-      id: 3,
-      name: "Amit Patel",
-      email: "amit.patel@email.com",
-      phone: "+91 98765 43212",
-      type: "Customer",
-      orders: 58,
-      totalSpent: "₹15,780",
-      joinedDate: "Dec 2022",
-      status: "Active",
-      avatar: "👨",
-    },
-    {
-      id: 4,
-      name: "Sneha Gupta",
-      email: "sneha.gupta@email.com",
-      phone: "+91 98765 43213",
-      type: "Customer",
-      orders: 12,
-      totalSpent: "₹3,240",
-      joinedDate: "Mar 2023",
-      status: "Inactive",
-      avatar: "👩",
-    },
-    {
-      id: 5,
-      name: "Vikram Singh",
-      email: "vikram.singh@email.com",
-      phone: "+91 98765 43214",
-      type: "Customer",
-      orders: 67,
-      totalSpent: "₹18,900",
-      joinedDate: "Nov 2022",
-      status: "Active",
-      avatar: "👨",
-    },
-    {
-      id: 6,
-      name: "Anjali Desai",
-      email: "anjali.desai@email.com",
-      phone: "+91 98765 43215",
-      type: "Customer",
-      orders: 23,
-      totalSpent: "₹6,780",
-      joinedDate: "Apr 2023",
-      status: "Active",
-      avatar: "👩",
-    },
-  ];
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching profiles:", error);
+      } else if (data) {
+        const mappedUsers = data.map((profile: any) => ({
+          id: profile.id,
+          name: profile.full_name || "Unknown",
+          email: "user@example.com", // Cannot fetch email from client side easily without duplicate
+          phone: profile.phone_number || "-",
+          type: "Customer", // Default
+          orders: Math.floor(Math.random() * 50), // Mock stats
+          totalSpent:
+            "₹" + (Math.floor(Math.random() * 10000) + 1000).toLocaleString(), // Mock stats
+          joinedDate: new Date(profile.created_at).toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric",
+          }),
+          status: "Active",
+          avatar: profile.avatar_url || "👤",
+        }));
+        setUsers(mappedUsers);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter =
-      filterType === "all" || user.status.toLowerCase() === filterType;
+      filterType === "all" ||
+      user.status.toLowerCase() === filterType.toLowerCase();
     return matchesSearch && matchesFilter;
   });
 
@@ -187,91 +156,97 @@ const UsersView: React.FC = () => {
         </div>
       </div>
 
-      {/* Users Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-        {filteredUsers.map((user) => (
-          <div
-            key={user.id}
-            className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
-          >
-            {/* Status Badge */}
-            <div className="absolute top-4 right-4">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                  user.status === "Active"
-                    ? "bg-green-400/20 text-green-200"
-                    : "bg-red-400/20 text-red-200"
-                }`}
-              >
-                {user.status}
-              </span>
-            </div>
-
-            {/* User Avatar */}
-            <div className="mb-4">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                {user.avatar}
-              </div>
-            </div>
-
-            {/* User Info */}
-            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
-              {user.name}
-            </h3>
-            <p className="text-white/70 text-sm mb-1">{user.email}</p>
-            <p className="text-white/50 text-xs mb-4">{user.phone}</p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Orders</p>
-                <p className="text-white font-bold">{user.orders}</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Total Spent</p>
-                <p className="text-white font-bold text-sm">
-                  {user.totalSpent}
-                </p>
-              </div>
-            </div>
-
-            {/* User Type */}
-            <div className="bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-xl p-3 mb-4">
-              <p className="text-white/50 text-xs mb-1">User Type</p>
-              <p className="text-white font-bold">{user.type}</p>
-            </div>
-
-            {/* Joined Date */}
-            <p className="text-white/40 text-xs mb-4">
-              Joined: {user.joinedDate}
-            </p>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
-                View Profile
-              </button>
-              <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        </div>
+      ) : (
+        /* Users Grid */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+          {filteredUsers.map((user) => (
+            <div
+              key={user.id}
+              className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
+            >
+              {/* Status Badge */}
+              <div className="absolute top-4 right-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
+                    user.status === "Active"
+                      ? "bg-green-400/20 text-green-200"
+                      : "bg-red-400/20 text-red-200"
+                  }`}
                 >
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="12" cy="5" r="1"></circle>
-                  <circle cx="12" cy="19" r="1"></circle>
-                </svg>
-              </button>
+                  {user.status}
+                </span>
+              </div>
+
+              {/* User Avatar */}
+              <div className="mb-4">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  {user.avatar}
+                </div>
+              </div>
+
+              {/* User Info */}
+              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
+                {user.name}
+              </h3>
+              <p className="text-white/70 text-sm mb-1">{user.email}</p>
+              <p className="text-white/50 text-xs mb-4">{user.phone}</p>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-white/50 text-xs mb-1">Orders</p>
+                  <p className="text-white font-bold">{user.orders}</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-white/50 text-xs mb-1">Total Spent</p>
+                  <p className="text-white font-bold text-sm">
+                    {user.totalSpent}
+                  </p>
+                </div>
+              </div>
+
+              {/* User Type */}
+              <div className="bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-xl p-3 mb-4">
+                <p className="text-white/50 text-xs mb-1">User Type</p>
+                <p className="text-white font-bold">{user.type}</p>
+              </div>
+
+              {/* Joined Date */}
+              <p className="text-white/40 text-xs mb-4">
+                Joined: {user.joinedDate}
+              </p>
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
+                  View Profile
+                </button>
+                <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
-      {filteredUsers.length === 0 && (
+      {!loading && filteredUsers.length === 0 && (
         <div className="text-center py-20 relative z-10">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-2xl font-bold text-white mb-2">No users found</h3>

@@ -1,90 +1,81 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AddMenuItemModal from "./AddMenuItemModal";
+import { supabase } from "../../lib/supabaseClient";
 
 const MenuItemsView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Mock restaurants data for the modal
-  const mockRestaurants = [
-    { id: 1, name: "Rasoi Restaurant", image: "🍛" },
-    { id: 2, name: "Pizza Paradise", image: "🍕" },
-    { id: 3, name: "Burger King", image: "🍔" },
-  ];
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [restaurantsList, setRestaurantsList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [menuItems, setMenuItems] = useState([
-    {
-      id: 1,
-      name: "Butter Chicken",
-      restaurant: "Rasoi Restaurant",
-      category: "Main Course",
-      price: "₹350",
-      image: "🍛",
-      available: true,
-      rating: 4.7,
-      orders: 245,
-    },
-    {
-      id: 2,
-      name: "Margherita Pizza",
-      restaurant: "Pizza Paradise",
-      category: "Pizza",
-      price: "₹450",
-      image: "🍕",
-      available: true,
-      rating: 4.8,
-      orders: 320,
-    },
-    {
-      id: 3,
-      name: "Veggie Burger",
-      restaurant: "Burger King",
-      category: "Burgers",
-      price: "₹180",
-      image: "🍔",
-      available: true,
-      rating: 4.5,
-      orders: 198,
-    },
-    {
-      id: 4,
-      name: "Sushi Platter",
-      restaurant: "Sushi Express",
-      category: "Japanese",
-      price: "₹650",
-      image: "🍱",
-      available: false,
-      rating: 4.9,
-      orders: 87,
-    },
-    {
-      id: 5,
-      name: "Paneer Tikka",
-      restaurant: "Tandoor House",
-      category: "Starters",
-      price: "₹280",
-      image: "🥘",
-      available: true,
-      rating: 4.6,
-      orders: 156,
-    },
-    {
-      id: 6,
-      name: "Cappuccino",
-      restaurant: "Cafe Mocha",
-      category: "Beverages",
-      price: "₹150",
-      image: "☕",
-      available: true,
-      rating: 4.4,
-      orders: 412,
-    },
-  ]);
+  // Fetch Menu Items and Restaurants
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Fetch Restaurants for dropdown
+      const { data: restaurantsData, error: restaurantsError } = await supabase
+        .from("restaurants")
+        .select("id, name, image_url");
 
-  const handleAddMenuItem = (newMenuItem: any) => {
-    setMenuItems([newMenuItem, ...menuItems]);
+      if (restaurantsData) {
+        setRestaurantsList(
+          restaurantsData.map((r) => ({
+            id: r.id,
+            name: r.name,
+            image: r.image_url || "🍽️",
+          }))
+        );
+      }
+
+      // Fetch Menu Items
+      // Note: We need restaurant name. Supabase join:
+      const { data: itemsData, error: itemsError } = await supabase
+        .from("menu_items")
+        .select(
+          `
+            *,
+            restaurants (
+                name
+            )
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      if (itemsError) {
+        console.error("Error fetching menu items:", itemsError);
+      } else if (itemsData) {
+        const mappedItems = itemsData.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          restaurant: item.restaurants?.name || "Unknown Restaurant",
+          category: item.category || "General",
+          price: "₹" + item.price,
+          image: item.image_url || "🍽️",
+          available: true, // Assuming available if exists for now, or add column
+          rating: 4.5, // Mock
+          orders: 0, // Mock
+          is_veg: item.is_veg,
+        }));
+        setMenuItems(mappedItems);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleAddMenuItem = async () => {
+    await fetchData();
+    setIsModalOpen(false);
   };
 
   const filteredItems = menuItems.filter((item) => {
@@ -104,7 +95,7 @@ const MenuItemsView: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAdd={handleAddMenuItem}
-        restaurants={mockRestaurants}
+        restaurants={restaurantsList}
       />
 
       {/* Decorative Background */}
@@ -167,86 +158,102 @@ const MenuItemsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Menu Items Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-        {filteredItems.map((item) => (
-          <div
-            key={item.id}
-            className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
-          >
-            {/* Availability Badge */}
-            <div className="absolute top-4 right-4">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                  item.available
-                    ? "bg-green-400/20 text-green-200"
-                    : "bg-red-400/20 text-red-200"
-                }`}
-              >
-                {item.available ? "Available" : "Out of Stock"}
-              </span>
-            </div>
-
-            {/* Item Image */}
-            <div className="mb-4">
-              <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                {item.image}
-              </div>
-            </div>
-
-            {/* Item Info */}
-            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
-              {item.name}
-            </h3>
-            <p className="text-white/70 text-sm mb-1">{item.category}</p>
-            <p className="text-white/50 text-xs mb-4">{item.restaurant}</p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Rating</p>
-                <p className="text-white font-bold flex items-center gap-1">
-                  ⭐ {item.rating}
-                </p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Orders</p>
-                <p className="text-white font-bold">{item.orders}</p>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-xl p-3 mb-4">
-              <p className="text-white/50 text-xs mb-1">Price</p>
-              <p className="text-white font-bold text-lg">{item.price}</p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
-                Edit
-              </button>
-              <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        </div>
+      ) : (
+        /* Menu Items Grid */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
+            >
+              {/* Availability Badge */}
+              <div className="absolute top-4 right-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
+                    item.available
+                      ? "bg-green-400/20 text-green-200"
+                      : "bg-red-400/20 text-red-200"
+                  }`}
                 >
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="12" cy="5" r="1"></circle>
-                  <circle cx="12" cy="19" r="1"></circle>
-                </svg>
-              </button>
+                  {item.available ? "Available" : "Out of Stock"}
+                </span>
+              </div>
+
+              {/* Item Image */}
+              <div className="mb-4">
+                <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300 overflow-hidden relative">
+                  {item.image &&
+                  (item.image.startsWith("http") ||
+                    item.image.startsWith("/")) ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    item.image
+                  )}
+                </div>
+              </div>
+
+              {/* Item Info */}
+              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
+                {item.name}
+              </h3>
+              <p className="text-white/70 text-sm mb-1">{item.category}</p>
+              <p className="text-white/50 text-xs mb-4">{item.restaurant}</p>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-white/50 text-xs mb-1">Rating</p>
+                  <p className="text-white font-bold flex items-center gap-1">
+                    ⭐ {item.rating}
+                  </p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-white/50 text-xs mb-1">Orders</p>
+                  <p className="text-white font-bold">{item.orders}</p>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-xl p-3 mb-4">
+                <p className="text-white/50 text-xs mb-1">Price</p>
+                <p className="text-white font-bold text-lg">{item.price}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
+                  Edit
+                </button>
+                <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
-      {filteredItems.length === 0 && (
+      {!loading && filteredItems.length === 0 && (
         <div className="text-center py-20 relative z-10">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-2xl font-bold text-white mb-2">

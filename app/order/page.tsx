@@ -6,11 +6,13 @@ import Footer from "../components/Footer";
 import Image from "next/image";
 import RestaurantCard from "../components/RestaurantCard";
 import HeroSlider from "../components/HeroSlider";
+import FloatingCartButton from "../components/FloatingCartButton";
 import {
   restaurantsData,
   getTrendingRestaurants,
   searchRestaurants,
 } from "../data/restaurants";
+import { supabase } from "../lib/supabaseClient";
 
 const OrderPage = () => {
   const router = useRouter();
@@ -18,9 +20,59 @@ const OrderPage = () => {
   const [locationName, setLocationName] = useState("Detecting...");
   const [addressLine, setAddressLine] = useState("Fetching address...");
   const [isLocating, setIsLocating] = useState(true);
-  const [isVegMode, setIsVegMode] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [showCart, setShowCart] = useState(true); // Demo state for sticky cart
+  const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
+
+  // Supabase State
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [loadingRestaurants, setLoadingRestaurants] = useState(true);
+
+  // Fetch Restaurants from Supabase
+  React.useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const { data, error } = await supabase.from("restaurants").select("*");
+        if (error) {
+          console.error("Error fetching restaurants:", error);
+          // Fallback to static data on error if wanted, or just set empty
+          setRestaurants(restaurantsData); // Using static data as fallback for now
+        } else if (data && data.length > 0) {
+          // Transform Supabase data to match component expectation
+          const transformed = data.map((r) => ({
+            id: r.id,
+            name: r.name,
+            rating: r.rating || "New",
+            reviews: r.review_count || "(0)",
+            price: r.price_range,
+            type: r.type,
+            address: r.address,
+            status: r.status || "Open Now",
+            statusColor:
+              r.status === "Open" ? "text-green-600" : "text-red-500",
+            image: r.image_url || "/img/restaurant-img/Rasoi Restaurant.webp", // Fallback image
+            trending: r.is_trending,
+            deliveryTime: r.delivery_time,
+            minOrder: r.min_order,
+            category: r.type ? [r.type] : [], // Simple category mapping
+            gradient: r.is_trending
+              ? "from-orange-400 to-red-500"
+              : "from-blue-400 to-indigo-600",
+          }));
+          setRestaurants(transformed);
+        } else {
+          // If no data in Supabase yet, show static data
+          setRestaurants(restaurantsData);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setRestaurants(restaurantsData);
+      } finally {
+        setLoadingRestaurants(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   // Automatically detect location on page load
   React.useEffect(() => {
@@ -79,12 +131,20 @@ const OrderPage = () => {
     { name: "Pooja Items", image: "/img/categories/pooja-items.webp" },
   ];
 
-  // Get filtered restaurants based on search
-  const filteredRestaurants = searchQuery
-    ? searchRestaurants(searchQuery)
-    : restaurantsData;
+  // Logic to filter and show data
+  const dataToShow = loadingRestaurants ? [] : restaurants; // Or handle loading visually
 
-  const trendingRestaurants = getTrendingRestaurants();
+  const filteredRestaurants = searchQuery
+    ? dataToShow.filter(
+        (r) =>
+          r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.type?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : activeCategory !== "All"
+    ? dataToShow.filter((r) => r.category?.includes(activeCategory)) // Might need better category logic if strict array
+    : dataToShow;
+
+  const trendingRestaurants = dataToShow.filter((r) => r.trending);
 
   return (
     <div className="min-h-screen bg-[#E59A01] dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-100 pb-24 transition-colors duration-500 overflow-x-hidden">
@@ -92,57 +152,36 @@ const OrderPage = () => {
       <div className="md:hidden relative">
         <Navbar />
         {/* Animated Background Orbs */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
-        <div className="absolute bottom-20 right-10 w-60 h-60 bg-gradient-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s] pointer-events-none"></div>
+        <div className="absolute top-20 left-10 w-64 h-64 bg-linear-to-br from-[#D92E2E]/20 to-orange-400/20 rounded-full blur-3xl animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-20 right-10 w-60 h-60 bg-linear-to-tl from-yellow-400/20 to-[#D92E2E]/20 rounded-full blur-3xl animate-pulse [animation-delay:1s] pointer-events-none"></div>
 
         {/* Mobile Header - Sticky & Glassmorphic */}
-        <header className="sticky top-0 z-30 bg-[#E59A01]/90 backdrop-blur-lg shadow-lg px-4 pt-4 pb-3 transition-all duration-300 border-b border-white/10">
+        <header className="hidden sticky top-0 z-30 bg-[#E59A01]/90 backdrop-blur-lg shadow-lg px-4 pt-4 pb-3 transition-all duration-300 border-b border-white/10">
           <div className="flex justify-between items-start mb-4">
-          {/* Search Bar & Toggle */}
-          <div className="flex items-center gap-3 mt-1">
-            <div className="flex-1 relative group">
-              <input
-                type="text"
-                placeholder="Search 'Biryani'..."
-                className="w-full pl-11 pr-4 py-3.5 bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl text-sm font-semibold focus:ring-2 focus:ring-white/40 focus:bg-white/20 placeholder-white/70 text-white transition-all shadow-inner"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/90 group-focus-within:scale-110 transition-transform"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
-                  clipRule="evenodd"
+            {/* Search Bar & Toggle */}
+            <div className="flex items-center gap-3 mt-1">
+              <div className="flex-1 relative group">
+                <input
+                  type="text"
+                  placeholder="Search 'Biryani'..."
+                  className="w-full pl-12 pr-4 py-4 bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl text-lg font-semibold focus:ring-2 focus:ring-white/40 focus:bg-white/20 placeholder-white/70 text-white transition-all shadow-inner"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-              </svg>
-            </div>
-            {/* Veg/Non-Veg Toggle */}
-            <div className="flex items-center gap-1 bg-white/15 backdrop-blur-xl p-1.5 rounded-xl border border-white/25 shadow-sm">
-              <button
-                className={`text-[10px] font-extrabold px-3 py-2 rounded-lg transition-all active:scale-95 ${
-                  !isVegMode
-                    ? "bg-white text-[#E59A01] shadow-md scale-105"
-                    : "text-white/80 hover:bg-white/10"
-                }`}
-                onClick={() => setIsVegMode(false)}
-              >
-                ALL
-              </button>
-              <button
-                className={`text-[10px] font-extrabold px-3 py-2 rounded-lg transition-all active:scale-95 ${
-                  isVegMode
-                    ? "bg-green-500 text-white shadow-md scale-105"
-                    : "text-white/80 hover:bg-white/10"
-                }`}
-                onClick={() => setIsVegMode(true)}
-              >
-                VEG
-              </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/90 group-focus-within:scale-110 transition-transform"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              {/* Veg/Non-Veg Toggle */}
             </div>
           </div>
         </header>
@@ -150,18 +189,31 @@ const OrderPage = () => {
         <main className="px-4 py-6 space-y-8 relative z-10">
           {/* Categories - Horizontal Scroll */}
           <section>
-            <h2 className="text-2xl font-extrabold text-white mb-6 drop-shadow-md">
-              What's on your{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-200">
-                mind?
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-extrabold text-white drop-shadow-md">
+                Category
+              </h2>
+              <span
+                className="text-xs text-white font-bold bg-white/20 px-2 py-1 rounded-full backdrop-blur-sm cursor-pointer hover:bg-white/30 transition"
+                onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
+              >
+                {isCategoryExpanded ? "Show Less" : "See All"}
               </span>
-            </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar">
+            </div>
+            <div
+              className={`flex gap-4 ${
+                isCategoryExpanded
+                  ? "flex-wrap justify-between"
+                  : "overflow-x-auto pb-2 hide-scrollbar"
+              }`}
+            >
               {categories.map((cat, idx) => (
                 <div
                   key={idx}
                   onClick={() => setActiveCategory(cat.name)}
-                  className={`flex flex-col items-center gap-2 min-w-[70px] cursor-pointer transition-all ${
+                  className={`flex flex-col items-center gap-2 ${
+                    isCategoryExpanded ? "w-[22%]" : "min-w-[70px]"
+                  } cursor-pointer transition-all ${
                     activeCategory === cat.name
                       ? "opacity-100 scale-105"
                       : "opacity-80"
@@ -186,7 +238,11 @@ const OrderPage = () => {
                     </div>
                   </div>
                   <span
-                    className={`text-xs font-medium whitespace-nowrap ${
+                    className={`text-xs font-medium ${
+                      isCategoryExpanded
+                        ? "text-center leading-tight"
+                        : "whitespace-nowrap"
+                    } ${
                       activeCategory === cat.name
                         ? "text-white font-bold"
                         : "text-white/80"
@@ -203,9 +259,9 @@ const OrderPage = () => {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-extrabold text-white drop-shadow-md">
-                Recommended{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-200">
-                  For You
+                Trending{" "}
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-white to-orange-200">
+                  Restaurants !
                 </span>
               </h2>
               <span
@@ -220,7 +276,7 @@ const OrderPage = () => {
               {trendingRestaurants.map((restaurant) => (
                 <div
                   key={restaurant.id}
-                  className="min-w-[280px] w-[280px] shrink-0 snap-center transform transition duration-300 hover:-translate-y-1"
+                  className="min-w-[220px] w-[220px] shrink-0 snap-center transform transition duration-300 hover:-translate-y-1"
                 >
                   <RestaurantCard restaurant={restaurant} />
                 </div>
@@ -249,7 +305,7 @@ const OrderPage = () => {
                         fill
                         className="object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                      <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent"></div>
                     </div>
 
                     {/* Right: Info */}
@@ -334,8 +390,8 @@ const OrderPage = () => {
 
         <main className="px-8 py-10 max-w-7xl mx-auto relative">
           {/* Animated Background Orbs */}
-          <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-[#D92E2E]/10 to-orange-400/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-yellow-400/10 to-[#D92E2E]/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
+          <div className="absolute top-20 left-10 w-96 h-96 bg-linear-to-br from-[#D92E2E]/10 to-orange-400/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-linear-to-tl from-yellow-400/10 to-[#D92E2E]/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
 
           {/* Search and Filter Section (Original) */}
           <div className="mb-12 space-y-6 relative z-10">
@@ -433,7 +489,7 @@ const OrderPage = () => {
           <section className="mb-16 relative z-10">
             <h2 className="text-5xl font-extrabold text-white mb-8 drop-shadow-md">
               What are you{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#D92E2E] to-orange-500">
                 craving?
               </span>
             </h2>
@@ -522,7 +578,7 @@ const OrderPage = () => {
           <section className="mb-16 relative z-10">
             <h2 className="text-5xl font-extrabold text-white mb-8 drop-shadow-md">
               Trending{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D92E2E] to-orange-500">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#D92E2E] to-orange-500">
                 Restaurants
               </span>
             </h2>
@@ -559,44 +615,8 @@ const OrderPage = () => {
         </main>
       </div>
 
-      {/* Sticky Cart Preview (Mobile Only) */}
-      {showCart && (
-        <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 animate-slide-up">
-          <div className="bg-[#D92E2E] text-white rounded-2xl shadow-2xl p-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-lg backdrop-blur-sm">
-                🍗
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-medium text-white/90 uppercase tracking-wide">
-                  1 Item Added
-                </span>
-                <span className="text-sm font-bold">View Cart</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-bold">₹120</span>
-              <button
-                onClick={() => setShowCart(false)}
-                className="w-8 h-8 flex items-center justify-center bg-black/20 rounded-full hover:bg-black/30 transition"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Floating Cart Button (Available in both Mobile and Desktop) */}
+      <FloatingCartButton />
 
       <Footer />
     </div>

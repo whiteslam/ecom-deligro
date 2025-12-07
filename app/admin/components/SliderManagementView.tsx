@@ -26,7 +26,7 @@ const defaultSlides: Slide[] = [
     subtitle: "Get Your Food in 30 Minutes",
     description:
       "Order from your favorite restaurants and get it delivered to your doorstep in no time!",
-    image: "/delivery-bike.png",
+    image: "/img/hero_rider_3d_v2.png",
     buttonText: "Order Now",
     buttonLink: "/order",
   },
@@ -36,7 +36,7 @@ const defaultSlides: Slide[] = [
     subtitle: "100% Fresh Ingredients",
     description:
       "We ensure the highest quality ingredients in every meal we deliver to you.",
-    image: "/fresh-food.png",
+    image: "/img/hero_rider_3d_left.png",
     buttonText: "Explore Menu",
     buttonLink: "/order",
   },
@@ -46,7 +46,7 @@ const defaultSlides: Slide[] = [
     subtitle: "Save More on Every Order",
     description:
       "Enjoy exclusive deals and discounts on your favorite meals every day!",
-    image: "/offers.png",
+    image: "/img/hero_rider_3d_glow.png",
     buttonText: "View Offers",
     buttonLink: "/order",
   },
@@ -93,7 +93,7 @@ const SliderManagementView = () => {
       title: "New Slide",
       subtitle: "Subtitle Here",
       description: "Description goes here...",
-      image: "/placeholder.png", // You might want a better default or allow upload
+      image: "/img/slide_placeholder.png", // You might want a better difference or allow upload
       buttonText: "Click Me",
       buttonLink: "/",
     };
@@ -255,7 +255,7 @@ const SliderManagementView = () => {
                   🗑️
                 </button>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black/80 to-transparent">
                 <span className="text-xs font-bold text-[#E59A01] uppercase tracking-wider">
                   Slide {index + 1}
                 </span>
@@ -308,7 +308,7 @@ const SliderManagementView = () => {
                   Slide Image
                 </label>
                 <div className="flex items-start gap-4">
-                  <div className="relative w-24 h-24 bg-white/5 border border-white/10 rounded-xl overflow-hidden flex-shrink-0">
+                  <div className="relative w-24 h-24 bg-white/5 border border-white/10 rounded-xl overflow-hidden shrink-0">
                     {editingSlide.image ? (
                       <Image
                         src={editingSlide.image}

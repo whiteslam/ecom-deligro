@@ -77,11 +77,11 @@ const FoodiePage = () => {
           </p>
         </div>
         {/* Right Column: Interactive Cards */}
-        <div className="flex-1 w-full grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 justify-center mt-4 sm:mt-8 md:mt-0">
+        <div className="flex-1 w-full grid grid-cols-3 md:grid-cols-3 gap-2 sm:gap-4 md:gap-6 justify-center mt-2 sm:mt-8 md:mt-0">
           {/* Order Food Card */}
           <div
             onClick={() => router.push("/order")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-orange-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-orange-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-orange-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-orange-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -102,19 +102,24 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 Order
                 <br />
                 Food
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Cravings? Solved.</span>
                 <span className="hidden md:inline">Hot & fresh meals!</span>
               </p>
             </div>
             <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-orange-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
-              <div className="text-[5rem] md:text-xl md:bg-orange-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
-                🍔
+              <div className="relative w-16 h-16 md:w-10 md:h-10 transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                <Image
+                  src="/img/categories/burger.png"
+                  alt="Order Food"
+                  fill
+                  className="object-contain drop-shadow-xl"
+                />
               </div>
               <span className="hidden md:inline ml-2">Order Now →</span>
             </div>
@@ -123,7 +128,7 @@ const FoodiePage = () => {
           {/* Pick & Drop */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-blue-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-blue-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-blue-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-blue-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -144,18 +149,23 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 Pick &<br />
                 Drop
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Anything, Anywhere.</span>
                 <span className="hidden md:inline">People & Parcels</span>
               </p>
             </div>
             <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-blue-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
-              <div className="text-[5rem] md:text-xl md:bg-blue-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
-                📦
+              <div className="relative w-16 h-16 md:w-10 md:h-10 transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                <Image
+                  src="/img/hero_rider_3d_v2.png"
+                  alt="Pick & Drop"
+                  fill
+                  className="object-contain drop-shadow-xl"
+                />
               </div>
               <span className="hidden md:inline ml-2">Book Now →</span>
             </div>
@@ -164,7 +174,7 @@ const FoodiePage = () => {
           {/* Grocery */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-green-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-green-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-green-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-green-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -185,17 +195,22 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 Grocery
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Fresh & Fast.</span>
                 <span className="hidden md:inline">Daily essentials</span>
               </p>
             </div>
             <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-green-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
-              <div className="text-[5rem] md:text-xl md:bg-green-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
-                🥦
+              <div className="relative w-16 h-16 md:w-10 md:h-10 transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
+                <Image
+                  src="/img/categories/broccoli.png"
+                  alt="Grocery"
+                  fill
+                  className="object-contain drop-shadow-xl"
+                />
               </div>
               <span className="hidden md:inline ml-2">Shop Now →</span>
             </div>
@@ -204,7 +219,7 @@ const FoodiePage = () => {
           {/* Medicine */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-red-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-red-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-red-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-red-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             {/* Emergency Tag */}
             <div className="hidden md:block absolute top-0 right-0 bg-red-600 text-white text-[10px] sm:text-[10px] font-bold px-3 py-1 rounded-bl-2xl rounded-tr-[2rem] z-20 animate-pulse shadow-md">
@@ -229,17 +244,22 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 Medicine
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Health First.</span>
                 <span className="hidden md:inline">Fast delivery</span>
               </p>
             </div>
             <div className="absolute -bottom-4 -right-4 md:static md:mt-2 md:flex md:items-center md:text-red-400 md:font-bold md:text-xs md:group-hover:translate-x-1 md:transition-transform">
-              <div className="text-[5rem] md:text-xl md:bg-red-500 md:w-10 md:h-10 md:rounded-full md:flex md:items-center md:justify-center md:text-white md:shadow-lg filter drop-shadow-2xl transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110">
-                💊
+              <div className="relative w-16 h-16 md:w-10 md:h-10 transform rotate-[-10deg] md:rotate-0 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110 overflow-hidden rounded-full border-2 border-white/50">
+                <Image
+                  src="/img/categories/medicine.jpeg"
+                  alt="Medicine"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <span className="hidden md:inline ml-2">Order Now →</span>
             </div>
@@ -248,7 +268,7 @@ const FoodiePage = () => {
           {/* Book Hotels */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-purple-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-purple-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-purple-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-purple-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -269,10 +289,10 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 Hotels
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Stay in Style.</span>
                 <span className="hidden md:inline">Book stay</span>
               </p>
@@ -288,7 +308,7 @@ const FoodiePage = () => {
           {/* Other Services */}
           <div
             onClick={() => router.push("/service")}
-            className="group relative bg-white/90 md:bg-white/10 backdrop-blur-2xl border border-white/60 md:border-white/20 p-5 sm:p-5 md:p-6 rounded-[2rem] sm:rounded-[2rem] shadow-xl shadow-gray-900/5 md:shadow-xl cursor-pointer hover:bg-white transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-gray-500/20 min-h-[170px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white/30 md:bg-white/10 backdrop-blur-xl border border-white/40 md:border-white/20 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-gray-900/5 md:shadow-xl cursor-pointer hover:bg-white/40 transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-gray-500/20 min-h-[140px] sm:min-h-[180px] flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-gray-500/5 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -309,10 +329,10 @@ const FoodiePage = () => {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-2xl sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
+              <h3 className="text-sm sm:text-base font-extrabold text-gray-800 md:text-white mb-1 leading-none tracking-tight uppercase">
                 More
               </h3>
-              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[70%]">
+              <p className="text-gray-500 md:text-white/80 text-xs sm:text-xs font-medium leading-tight line-clamp-2 max-w-[90%]">
                 <span className="md:hidden">Discover All.</span>
                 <span className="hidden md:inline">Explore all</span>
               </p>
@@ -653,9 +673,7 @@ const FoodiePage = () => {
       <Footer />
 
       {/* Under Construction Sticky Note */}
-      <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white px-4 py-2 rounded-lg shadow-2xl transform rotate-3 border border-red-400 font-bold text-sm animate-bounce">
-        🚧 Site Under Construction
-      </div>
+
       {/* Location Popup */}
       {/* {showLocationPopup && (
         <LocationPopup onClose={() => setShowLocationPopup(false)} />

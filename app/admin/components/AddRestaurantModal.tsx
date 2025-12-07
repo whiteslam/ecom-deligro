@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 interface AddRestaurantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (restaurant: any) => void;
+  onAdd: () => void; // Changed to void as we just trigger refresh
 }
 
 const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
@@ -20,45 +21,55 @@ const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
     email: "",
     address: "",
     image: "🍽️",
+    customImage: "", // New field for custom image URL
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // Create new restaurant object
-    const newRestaurant = {
-      id: Date.now(),
-      name: formData.name,
-      owner: formData.owner,
-      cuisine: formData.cuisine,
-      rating: 4.0,
-      orders: 0,
-      revenue: "₹0",
-      status: "Pending",
-      image: formData.image,
-      joinedDate: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      }),
-      phone: formData.phone,
-      email: formData.email,
-      address: formData.address,
-    };
+    const finalImage = formData.customImage || formData.image;
 
-    onAdd(newRestaurant);
+    try {
+      const { error } = await supabase.from("restaurants").insert([
+        {
+          name: formData.name,
+          type: formData.cuisine, // Mapping 'cuisine' to 'type' column
+          rating: 0, // Default new listing
+          review_count: 0,
+          status: "Open", // Default
+          image_url: finalImage,
+          address: formData.address,
+          is_trending: false,
+          price_range: "₹200 for two", // Default placeholder
+          delivery_time: "30-40 min", // Default placeholder
+          min_order: "₹100", // Default placeholder
+        },
+      ]);
 
-    // Reset form
-    setFormData({
-      name: "",
-      owner: "",
-      cuisine: "",
-      phone: "",
-      email: "",
-      address: "",
-      image: "🍽️",
-    });
-
-    onClose();
+      if (error) {
+        console.error("Error adding restaurant:", error);
+        alert("Failed to add restaurant. Please try again.");
+      } else {
+        onAdd(); // Trigger refresh in parent
+        setFormData({
+          name: "",
+          owner: "",
+          cuisine: "",
+          phone: "",
+          email: "",
+          address: "",
+          image: "🍽️",
+          customImage: "",
+        });
+        onClose();
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -258,8 +269,22 @@ const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-1 h-6 bg-white rounded-full"></div>
                     <h3 className="text-lg font-bold text-white">
-                      Restaurant Icon
+                      Restaurant Image
                     </h3>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-white font-semibold mb-2 text-sm">
+                      Image URL (Optional) or Select Icon below
+                    </label>
+                    <input
+                      type="text"
+                      name="customImage"
+                      value={formData.customImage}
+                      onChange={handleChange}
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/50 backdrop-blur-sm transition-all duration-200 font-medium mb-4"
+                    />
                   </div>
 
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20">
@@ -285,10 +310,14 @@ const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
                           key={emoji}
                           type="button"
                           onClick={() =>
-                            setFormData({ ...formData, image: emoji })
+                            setFormData({
+                              ...formData,
+                              image: emoji,
+                              customImage: "",
+                            })
                           }
                           className={`aspect-square p-3 text-3xl rounded-xl transition-all duration-200 ${
-                            formData.image === emoji
+                            formData.image === emoji && !formData.customImage
                               ? "bg-white text-[#E59A01] scale-110 shadow-xl ring-2 ring-white/50"
                               : "bg-white/20 hover:bg-white/30 hover:scale-105"
                           }`}
@@ -315,9 +344,10 @@ const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="flex-1 py-3.5 bg-white text-[#E59A01] rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02] hover:bg-white/95"
+                  disabled={isSubmitting}
+                  className="flex-1 py-3.5 bg-white text-[#E59A01] rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02] hover:bg-white/95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Add Restaurant
+                  {isSubmitting ? "Adding..." : "Add Restaurant"}
                 </button>
               </div>
             </div>

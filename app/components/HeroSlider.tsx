@@ -26,7 +26,7 @@ const defaultSlides: Slide[] = [
     subtitle: "Get Your Food in 30 Minutes",
     description:
       "Order from your favorite restaurants and get it delivered to your doorstep in no time!",
-    image: "/delivery-bike.png",
+    image: "/img/hero_rider_3d_v2.png",
     buttonText: "Order Now",
     buttonLink: "/order",
   },
@@ -36,7 +36,7 @@ const defaultSlides: Slide[] = [
     subtitle: "100% Fresh Ingredients",
     description:
       "We ensure the highest quality ingredients in every meal we deliver to you.",
-    image: "/fresh-food.png",
+    image: "/img/hero_rider_3d_left.png",
     buttonText: "Explore Menu",
     buttonLink: "/order",
   },
@@ -46,7 +46,7 @@ const defaultSlides: Slide[] = [
     subtitle: "Save More on Every Order",
     description:
       "Enjoy exclusive deals and discounts on your favorite meals every day!",
-    image: "/offers.png",
+    image: "/img/hero_rider_3d_glow.png",
     buttonText: "View Offers",
     buttonLink: "/order",
   },
@@ -127,7 +127,7 @@ export default function HeroSlider() {
               <div className="absolute inset-0">
                 {slide.image.startsWith("/") && !slide.image.includes(".") ? (
                   // Fallback for emoji placeholders
-                  <div className="w-full h-full bg-gradient-to-r from-orange-500 to-yellow-500 flex items-center justify-center">
+                  <div className="w-full h-full bg-linear-to-r from-orange-500 to-yellow-500 flex items-center justify-center">
                     <span className="text-9xl opacity-20">
                       {slide.id === 1 ? "🏍️" : slide.id === 2 ? "🍕" : "🎁"}
                     </span>
@@ -142,7 +142,7 @@ export default function HeroSlider() {
                   />
                 )}
                 {/* Gradient Overlay for Text Readability */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent"></div>
               </div>
 
               {/* Content */}

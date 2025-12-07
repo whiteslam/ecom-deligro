@@ -1,99 +1,88 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
 const OrdersView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const orders = [
-    {
-      id: "#ORD-7782",
-      customer: "Priya Sharma",
-      restaurant: "Rasoi Restaurant",
-      items: ["Butter Chicken", "Naan", "Dal Makhani"],
-      amount: "₹450",
-      status: "Delivered",
-      time: "2 mins ago",
-      rider: "Rahul Kumar",
-      address: "Sector 7, Bemetara",
-      paymentMethod: "Online",
-    },
-    {
-      id: "#ORD-7781",
-      customer: "Rahul Verma",
-      restaurant: "Burger King",
-      items: ["Whopper Burger", "Fries", "Coke"],
-      amount: "₹280",
-      status: "Cooking",
-      time: "15 mins ago",
-      rider: "Amit Singh",
-      address: "Sector 12, Bemetara",
-      paymentMethod: "COD",
-    },
-    {
-      id: "#ORD-7780",
-      customer: "Amit Patel",
-      restaurant: "Pizza Hut",
-      items: ["Margherita Pizza", "Garlic Bread", "Pepsi"],
-      amount: "₹890",
-      status: "On the way",
-      time: "25 mins ago",
-      rider: "Vikram Patel",
-      address: "Sector 5, Bemetara",
-      paymentMethod: "Online",
-    },
-    {
-      id: "#ORD-7779",
-      customer: "Sneha Gupta",
-      restaurant: "Subway",
-      items: ["Veggie Delight Sub", "Cookies"],
-      amount: "₹320",
-      status: "Cancelled",
-      time: "1 hour ago",
-      rider: "-",
-      address: "Sector 9, Bemetara",
-      paymentMethod: "Online",
-    },
-    {
-      id: "#ORD-7778",
-      customer: "Vikram Singh",
-      restaurant: "Starbucks",
-      items: ["Cappuccino", "Blueberry Muffin"],
-      amount: "₹550",
-      status: "Delivered",
-      time: "2 hours ago",
-      rider: "Deepak Sharma",
-      address: "Sector 3, Bemetara",
-      paymentMethod: "COD",
-    },
-    {
-      id: "#ORD-7777",
-      customer: "Anjali Desai",
-      restaurant: "Tandoor House",
-      items: ["Paneer Tikka", "Roti", "Raita"],
-      amount: "₹420",
-      status: "Preparing",
-      time: "30 mins ago",
-      rider: "Manoj Verma",
-      address: "Sector 15, Bemetara",
-      paymentMethod: "Online",
-    },
-  ];
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select(
+          `
+          id,
+          created_at,
+          total_amount,
+          status,
+          delivery_address,
+          restaurants (name),
+          profiles (full_name),
+          order_items (
+            quantity,
+            menu_items (name)
+          )
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching orders:", error);
+      } else if (data) {
+        const mappedOrders = data.map((order: any) => ({
+          id: "#" + order.id.slice(0, 8).toUpperCase(), // Shorten UUID
+          customer: order.profiles?.full_name || "Guest User",
+          restaurant: order.restaurants?.name || "Unknown Restaurant",
+          items:
+            order.order_items?.map(
+              (oi: any) => oi.menu_items?.name || "Unknown Item"
+            ) || [],
+          amount: "₹" + order.total_amount,
+          status: capitalize(order.status),
+          time: new Date(order.created_at).toLocaleString(), // Simple format
+          rider: "-", // No rider table yet
+          address: order.delivery_address || "No address",
+          paymentMethod: "Online", // value not in table yet, default
+        }));
+        setOrders(mappedOrders);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const capitalize = (s: string) => {
+    if (!s) return "";
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter =
-      filterStatus === "all" || order.status.toLowerCase() === filterStatus;
+      filterStatus === "all" ||
+      order.status.toLowerCase() === filterStatus.toLowerCase();
     return matchesSearch && matchesFilter;
   });
 
   const statusCounts = {
     all: orders.length,
     delivered: orders.filter((o) => o.status === "Delivered").length,
-    cooking: orders.filter((o) => o.status === "Cooking").length,
-    onTheWay: orders.filter((o) => o.status === "On the way").length,
+    cooking: orders.filter((o) => o.status === "Cooking").length, // 'preparing' in DB usually
+    onTheWay: orders.filter(
+      (o) => o.status === "Out_for_delivery" || o.status === "On the way"
+    ).length,
     preparing: orders.filter((o) => o.status === "Preparing").length,
     cancelled: orders.filter((o) => o.status === "Cancelled").length,
   };
@@ -196,116 +185,125 @@ const OrdersView: React.FC = () => {
         </div>
       </div>
 
-      {/* Orders List */}
-      <div className="space-y-4 relative z-10">
-        {filteredOrders.map((order) => (
-          <div
-            key={order.id}
-            className="group bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-300"
-          >
-            <div className="flex flex-col lg:flex-row gap-6">
-              {/* Order Info */}
-              <div className="flex-1">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      {order.id}
-                    </h3>
-                    <p className="text-white/70 text-sm">{order.time}</p>
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        </div>
+      ) : (
+        /* Orders List */
+        <div className="space-y-4 relative z-10">
+          {filteredOrders.map((order) => (
+            <div
+              key={order.id}
+              className="group bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-300"
+            >
+              <div className="flex flex-col lg:flex-row gap-6">
+                {/* Order Info */}
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        {order.id}
+                      </h3>
+                      <p className="text-white/70 text-sm">{order.time}</p>
+                    </div>
+                    <span
+                      className={`px-4 py-2 rounded-full text-xs font-bold backdrop-blur-sm ${
+                        order.status === "Delivered"
+                          ? "bg-green-400/20 text-green-200"
+                          : order.status === "Cooking" ||
+                            order.status === "Preparing"
+                          ? "bg-orange-400/20 text-orange-200"
+                          : order.status === "On the way" ||
+                            order.status === "Out_for_delivery"
+                          ? "bg-blue-400/20 text-blue-200"
+                          : "bg-red-400/20 text-red-200"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
                   </div>
-                  <span
-                    className={`px-4 py-2 rounded-full text-xs font-bold backdrop-blur-sm ${
-                      order.status === "Delivered"
-                        ? "bg-green-400/20 text-green-200"
-                        : order.status === "Cooking" ||
-                          order.status === "Preparing"
-                        ? "bg-orange-400/20 text-orange-200"
-                        : order.status === "On the way"
-                        ? "bg-blue-400/20 text-blue-200"
-                        : "bg-red-400/20 text-red-200"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-white/50 text-xs mb-1">Customer</p>
+                      <p className="text-white font-bold">{order.customer}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/50 text-xs mb-1">Restaurant</p>
+                      <p className="text-white font-bold">{order.restaurant}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/50 text-xs mb-1">Rider</p>
+                      <p className="text-white font-bold">{order.rider}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/50 text-xs mb-1">Payment</p>
+                      <p className="text-white font-bold">
+                        {order.paymentMethod}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-white/50 text-xs mb-2">Items Ordered</p>
+                    <div className="flex flex-wrap gap-2">
+                      {order.items.map((item: string, idx: number) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-white/50 text-xs mb-1">
+                      Delivery Address
+                    </p>
+                    <p className="text-white text-sm">📍 {order.address}</p>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-white/50 text-xs mb-1">Customer</p>
-                    <p className="text-white font-bold">{order.customer}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/50 text-xs mb-1">Restaurant</p>
-                    <p className="text-white font-bold">{order.restaurant}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/50 text-xs mb-1">Rider</p>
-                    <p className="text-white font-bold">{order.rider}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/50 text-xs mb-1">Payment</p>
-                    <p className="text-white font-bold">
-                      {order.paymentMethod}
+                {/* Amount & Actions */}
+                <div className="flex flex-col justify-between items-end">
+                  <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-2xl p-4 mb-4">
+                    <p className="text-white/50 text-xs mb-1">Total Amount</p>
+                    <p className="text-white text-3xl font-bold">
+                      {order.amount}
                     </p>
                   </div>
-                </div>
 
-                <div className="mb-4">
-                  <p className="text-white/50 text-xs mb-2">Items Ordered</p>
-                  <div className="flex flex-wrap gap-2">
-                    {order.items.map((item, idx) => (
-                      <span
-                        key={idx}
-                        className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium text-white"
+                  <div className="flex gap-2">
+                    <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
+                      View Details
+                    </button>
+                    <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
                       >
-                        {item}
-                      </span>
-                    ))}
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </button>
                   </div>
-                </div>
-
-                <div>
-                  <p className="text-white/50 text-xs mb-1">Delivery Address</p>
-                  <p className="text-white text-sm">📍 {order.address}</p>
-                </div>
-              </div>
-
-              {/* Amount & Actions */}
-              <div className="flex flex-col justify-between items-end">
-                <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-2xl p-4 mb-4">
-                  <p className="text-white/50 text-xs mb-1">Total Amount</p>
-                  <p className="text-white text-3xl font-bold">
-                    {order.amount}
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
-                    View Details
-                  </button>
-                  <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="12" cy="12" r="1"></circle>
-                      <circle cx="12" cy="5" r="1"></circle>
-                      <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
-      {filteredOrders.length === 0 && (
+      {!loading && filteredOrders.length === 0 && (
         <div className="text-center py-20 relative z-10">
           <div className="text-6xl mb-4">📦</div>
           <h3 className="text-2xl font-bold text-white mb-2">

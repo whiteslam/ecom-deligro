@@ -9,21 +9,142 @@ import FloatingCartButton from "../../components/FloatingCartButton";
 import { restaurantsData } from "../../data/restaurants";
 import {
   getMenuItemsByRestaurant,
-  getRestaurantCategories,
+  //   getRestaurantCategories,
   getMenuItemsByCategory,
+  menuItemsData,
 } from "../../data/menuItems";
 import Image from "next/image";
+import { supabase } from "../../lib/supabaseClient";
 
 const RestaurantMenuPage = () => {
   const params = useParams();
   const restaurantId = params.id as string;
-  const restaurant = restaurantsData.find((r) => r.id === restaurantId);
+
+  // State for dynamic data
+  const [restaurant, setRestaurant] = useState<any>(null);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Fetch Data from Supabase
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!restaurantId) return;
+
+      setLoading(true);
+      try {
+        // 1. Fetch Restaurant Details
+        const { data: restaurantData, error: restaurantError } = await supabase
+          .from("restaurants")
+          .select("*")
+          .eq("id", restaurantId)
+          .single();
+
+        if (restaurantError || !restaurantData) {
+          console.log(
+            "Supabase restaurant not found/error, checking static data..."
+          );
+          // Fallback to static data
+          const staticRestaurant = restaurantsData.find(
+            (r) => r.id === restaurantId
+          );
+          if (staticRestaurant) {
+            setRestaurant(staticRestaurant);
+            // Load static menu items too
+            setMenuItems(getMenuItemsByRestaurant(restaurantId));
+          }
+        } else {
+          // Transform Supabase Data to match UI
+          const transformedRestaurant = {
+            id: restaurantData.id,
+            name: restaurantData.name,
+            rating: restaurantData.rating || "New",
+            reviews: restaurantData.review_count || "(0)",
+            price: restaurantData.price_range,
+            type: restaurantData.type,
+            address: restaurantData.address,
+            status: restaurantData.status || "Open Now",
+            statusColor:
+              restaurantData.status === "Open"
+                ? "text-green-600"
+                : "text-red-500",
+            image:
+              restaurantData.image_url ||
+              "/img/restaurant-img/Rasoi Restaurant.webp",
+            trending: restaurantData.is_trending,
+            deliveryTime: restaurantData.delivery_time,
+            minOrder: restaurantData.min_order,
+            category: restaurantData.type ? [restaurantData.type] : [],
+            gradient: restaurantData.is_trending
+              ? "from-orange-400 to-red-500"
+              : "from-blue-400 to-indigo-600",
+          };
+          setRestaurant(transformedRestaurant);
+
+          // 2. Fetch Menu Items for this restaurant
+          const { data: menuData, error: menuError } = await supabase
+            .from("menu_items")
+            .select("*")
+            .eq("restaurant_id", restaurantId);
+
+          if (menuData && menuData.length > 0) {
+            const transformedMenu = menuData.map((item) => ({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              image:
+                item.image_url || "/img/restaurant-img/Rasoi Restaurant.webp", // Fallback
+              category: item.category,
+              isVeg: item.is_veg,
+              rating: 4.5, // Default/Mock for now
+              reviews: 10, // Default/Mock
+              badge: item.is_bestseller ? "Bestseller" : null,
+              restaurantId: item.restaurant_id,
+            }));
+            setMenuItems(transformedMenu);
+          } else {
+            // If restaurant exists in Supabase but no items, maybe fallback to formatted static items if IDs match?
+            // Unlikely IDs match if created separately. Just showing empty or static fallback if needed.
+            // For now we assume if restaurant came from Supabase, items should too, or it's empty.
+            // BUT for hybrid (checking static based on ID):
+            const staticItems = getMenuItemsByRestaurant(restaurantId);
+            if (staticItems.length > 0) {
+              setMenuItems(staticItems);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching restaurant details:", err);
+        // Final fallback
+        const staticRestaurant = restaurantsData.find(
+          (r) => r.id === restaurantId
+        );
+        if (staticRestaurant) {
+          setRestaurant(staticRestaurant);
+          setMenuItems(getMenuItemsByRestaurant(restaurantId));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [restaurantId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#E59A01] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white"></div>
+      </div>
+    );
+  }
 
   if (!restaurant) {
     return (
@@ -46,12 +167,16 @@ const RestaurantMenuPage = () => {
     );
   }
 
-  const allMenuItems = getMenuItemsByRestaurant(restaurantId);
-  const categories = ["All", ...getRestaurantCategories(restaurantId)];
+  // Derive categories from the actual menu items currently in state
+  const uniqueCategories = Array.from(
+    new Set(menuItems.map((item) => item.category))
+  ).filter(Boolean);
+  const categories = ["All", ...uniqueCategories];
+
   const displayItems =
     selectedCategory === "All"
-      ? allMenuItems
-      : getMenuItemsByCategory(restaurantId, selectedCategory);
+      ? menuItems
+      : menuItems.filter((item) => item.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E59A01] via-[#F5A623] to-[#E59A01] font-sans text-gray-800 relative overflow-hidden">

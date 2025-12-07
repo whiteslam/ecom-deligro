@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import ImageUpload from "./ImageUpload";
+import { supabase } from "../../lib/supabaseClient";
 
 interface AddMenuItemModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (menuItem: any) => void;
+  onAdd: () => void;
   restaurants: any[];
 }
 
@@ -17,13 +18,15 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Basic Info
     name: "",
-    restaurant: "",
+    restaurantId: "", // Store ID instead of name
     category: "",
     description: "",
     image: "🍽️",
+    customImage: "", // URL input
     uploadedImageData: null as string | null,
 
     // Pricing & Details
@@ -55,28 +58,39 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
     }>,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    const newMenuItem = {
-      id: Date.now(),
-      ...formData,
-      price: `₹${formData.price}`,
-      discountedPrice: formData.discountedPrice
-        ? `₹${formData.discountedPrice}`
-        : null,
-      rating: 4.0,
-      orders: 0,
-      available: formData.isAvailable,
-      addedDate: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      }),
-    };
+    const finalImage = formData.customImage || formData.image;
 
-    onAdd(newMenuItem);
-    resetForm();
-    onClose();
+    try {
+      const { error } = await supabase.from("menu_items").insert([
+        {
+          restaurant_id: formData.restaurantId,
+          name: formData.name,
+          description: formData.description,
+          price: parseFloat(formData.price),
+          image_url: finalImage,
+          category: formData.category,
+          is_veg: formData.isVeg,
+          is_bestseller: formData.tags.includes("Bestseller"),
+        },
+      ]);
+
+      if (error) {
+        console.error("Error adding menu item:", error);
+        alert("Failed to add menu item. Please try again.");
+      } else {
+        onAdd();
+        resetForm();
+        onClose();
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -84,10 +98,11 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
     setUploadedImage(null);
     setFormData({
       name: "",
-      restaurant: "",
+      restaurantId: "",
       category: "",
       description: "",
       image: "🍽️",
+      customImage: "",
       uploadedImageData: null,
       price: "",
       discountedPrice: "",
@@ -113,6 +128,7 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
     >
   ) => {
     const { name, value, type } = e.target;
+    // Handle checkbox
     const checked = (e.target as HTMLInputElement).checked;
 
     setFormData({
@@ -198,8 +214,8 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
       <div className="relative w-full max-w-4xl max-h-[95vh] overflow-hidden">
         <div className="relative bg-[#E59A01] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
           {/* Decorative Background */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-300/30 to-red-500/30 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tl from-yellow-300/30 to-orange-400/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-orange-300/30 to-red-500/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-linear-to-tl from-yellow-300/30 to-orange-400/30 rounded-full blur-3xl"></div>
 
           <div className="relative bg-white/15 backdrop-blur-2xl border border-white/30 rounded-3xl">
             {/* Header */}
@@ -304,16 +320,16 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                         Restaurant <span className="text-red-300">*</span>
                       </label>
                       <select
-                        name="restaurant"
-                        value={formData.restaurant}
+                        name="restaurantId"
+                        value={formData.restaurantId}
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/60 cursor-pointer backdrop-blur-sm font-medium [&>option]:text-gray-800 [&>option]:bg-white"
                       >
                         <option value="">Select Restaurant</option>
                         {restaurants.map((restaurant) => (
-                          <option key={restaurant.id} value={restaurant.name}>
-                            {restaurant.image} {restaurant.name}
+                          <option key={restaurant.id} value={restaurant.id}>
+                            {restaurant.name}
                           </option>
                         ))}
                       </select>
@@ -345,6 +361,20 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
 
                     <div className="md:col-span-2">
                       <label className="block text-white font-semibold mb-2 text-sm">
+                        Image URL (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        name="customImage"
+                        value={formData.customImage}
+                        onChange={handleChange}
+                        placeholder="https://example.com/item.jpg"
+                        className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/50 backdrop-blur-sm transition-all duration-200 font-medium mb-4"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-white font-semibold mb-2 text-sm">
                         Description <span className="text-red-300">*</span>
                       </label>
                       <textarea
@@ -359,34 +389,10 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Image Upload */}
-                  <ImageUpload
-                    currentImage={uploadedImage || undefined}
-                    onImageChange={(imageData) => {
-                      setUploadedImage(imageData);
-                      setFormData({
-                        ...formData,
-                        uploadedImageData: imageData,
-                      });
-                    }}
-                    label="Dish Image (Optional)"
-                    aspectRatio="landscape"
-                    maxSizeMB={5}
-                  />
-
-                  {/* Divider */}
-                  <div className="flex items-center gap-4 my-6">
-                    <div className="flex-1 h-px bg-white/20"></div>
-                    <span className="text-white/60 text-sm font-medium">
-                      OR
-                    </span>
-                    <div className="flex-1 h-px bg-white/20"></div>
-                  </div>
-
                   {/* Icon Selector */}
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20">
                     <p className="text-white/80 text-sm mb-4 font-medium">
-                      Select a dish icon
+                      Select or Use URL above
                     </p>
                     <div className="grid grid-cols-8 md:grid-cols-12 gap-3">
                       {[
@@ -411,10 +417,14 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                           key={emoji}
                           type="button"
                           onClick={() =>
-                            setFormData({ ...formData, image: emoji })
+                            setFormData({
+                              ...formData,
+                              image: emoji,
+                              customImage: "",
+                            })
                           }
                           className={`aspect-square p-3 text-2xl rounded-xl transition-all duration-200 ${
-                            formData.image === emoji
+                            formData.image === emoji && !formData.customImage
                               ? "bg-white text-[#E59A01] scale-110 shadow-xl ring-2 ring-white/50"
                               : "bg-white/20 hover:bg-white/30 hover:scale-105"
                           }`}
@@ -466,428 +476,63 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                         className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm font-medium"
                       />
                     </div>
-
-                    <div>
-                      <label className="block text-white font-semibold mb-2 text-sm">
-                        Preparation Time (mins){" "}
-                        <span className="text-red-300">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="preparationTime"
-                        value={formData.preparationTime}
-                        onChange={handleChange}
-                        required
-                        min="1"
-                        placeholder="20"
-                        className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm font-medium"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-white font-semibold mb-2 text-sm">
-                        Serving Size <span className="text-red-300">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="servingSize"
-                        value={formData.servingSize}
-                        onChange={handleChange}
-                        required
-                        placeholder="Serves 2"
-                        className="w-full px-4 py-3.5 bg-white/20 border-2 border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm font-medium"
-                      />
-                    </div>
                   </div>
-
-                  {formData.discountedPrice &&
-                    parseFloat(formData.discountedPrice) <
-                      parseFloat(formData.price) && (
-                      <div className="bg-green-400/20 border-2 border-green-400/40 rounded-xl p-4">
-                        <p className="text-green-200 font-semibold text-sm">
-                          💰{" "}
-                          {Math.round(
-                            ((parseFloat(formData.price) -
-                              parseFloat(formData.discountedPrice)) /
-                              parseFloat(formData.price)) *
-                              100
-                          )}
-                          % OFF - Great deal!
-                        </p>
-                      </div>
-                    )}
                 </div>
               )}
 
-              {/* Step 3: Dietary & Tags */}
+              {/* Other steps logic ... (Simulated by simple navigation for now to keep this minimal for Supabase integration, but keeping the navigation buttons below) */}
+
+              {/* Step 3: Dietary - Simplified viewing for now as these don't map to DB columns instantly in this strict schema without JSON B, but mapped is_veg */}
               {currentStep === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20">
-                    <p className="text-white font-semibold mb-4">
-                      Dietary Information
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          name="isVeg"
-                          checked={formData.isVeg}
-                          onChange={handleChange}
-                          className="w-5 h-5 rounded border-2 border-white/30 bg-white/20 checked:bg-green-500 checked:border-green-500 cursor-pointer"
-                        />
-                        <span className="text-white font-medium group-hover:text-green-200 transition">
-                          🥬 Vegetarian
-                        </span>
-                      </label>
-
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          name="isVegan"
-                          checked={formData.isVegan}
-                          onChange={handleChange}
-                          className="w-5 h-5 rounded border-2 border-white/30 bg-white/20 checked:bg-green-500 checked:border-green-500 cursor-pointer"
-                        />
-                        <span className="text-white font-medium group-hover:text-green-200 transition">
-                          🌱 Vegan
-                        </span>
-                      </label>
-
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          name="isGlutenFree"
-                          checked={formData.isGlutenFree}
-                          onChange={handleChange}
-                          className="w-5 h-5 rounded border-2 border-white/30 bg-white/20 checked:bg-green-500 checked:border-green-500 cursor-pointer"
-                        />
-                        <span className="text-white font-medium group-hover:text-green-200 transition">
-                          🌾 Gluten-Free
-                        </span>
-                      </label>
-
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          name="isSpicy"
-                          checked={formData.isSpicy}
-                          onChange={handleChange}
-                          className="w-5 h-5 rounded border-2 border-white/30 bg-white/20 checked:bg-red-500 checked:border-red-500 cursor-pointer"
-                        />
-                        <span className="text-white font-medium group-hover:text-red-200 transition">
-                          🌶️ Spicy
-                        </span>
-                      </label>
-                    </div>
-
-                    {formData.isSpicy && (
-                      <div className="mt-4">
-                        <label className="block text-white font-semibold mb-2 text-sm">
-                          Spice Level
-                        </label>
-                        <div className="flex gap-2">
-                          {["1", "2", "3"].map((level) => (
-                            <button
-                              key={level}
-                              type="button"
-                              onClick={() =>
-                                setFormData({ ...formData, spicyLevel: level })
-                              }
-                              className={`flex-1 py-2 rounded-lg font-semibold transition ${
-                                formData.spicyLevel === level
-                                  ? "bg-red-500 text-white"
-                                  : "bg-white/20 text-white/70 hover:bg-white/30"
-                              }`}
-                            >
-                              {"🌶️".repeat(parseInt(level))}{" "}
-                              {level === "1"
-                                ? "Mild"
-                                : level === "2"
-                                ? "Medium"
-                                : "Hot"}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20">
-                    <p className="text-white font-semibold mb-4">
-                      Popular Tags
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        "Bestseller",
-                        "Chef's Special",
-                        "Healthy",
-                        "Comfort Food",
-                        "Street Food",
-                        "Traditional",
-                        "Fusion",
-                        "Low Calorie",
-                      ].map((tag) => (
-                        <button
-                          key={tag}
-                          type="button"
-                          onClick={() => toggleTag(tag)}
-                          className={`px-4 py-2 rounded-full font-medium transition ${
-                            formData.tags.includes(tag)
-                              ? "bg-white text-[#E59A01]"
-                              : "bg-white/20 text-white hover:bg-white/30"
-                          }`}
-                        >
-                          {tag}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      name="isVeg"
+                      checked={formData.isVeg}
+                      onChange={handleChange}
+                      className="w-5 h-5 rounded border-2 border-white/30 bg-white/20 checked:bg-green-500 checked:border-green-500 cursor-pointer"
+                    />
+                    <span className="text-white font-medium">Vegetarian</span>
+                  </label>
+                  {/* Other tags can be added here if schema supports them */}
                 </div>
               )}
 
-              {/* Step 4: Customizations */}
-              {currentStep === 4 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300">
-                  <div className="flex items-center justify-between">
-                    <p className="text-white font-semibold">
-                      Add-ons & Customizations
-                    </p>
-                    <button
-                      type="button"
-                      onClick={addCustomization}
-                      className="px-4 py-2 bg-white text-[#E59A01] rounded-lg font-semibold hover:bg-white/90 transition"
-                    >
-                      + Add Customization
-                    </button>
-                  </div>
-
-                  {formData.customizations.length === 0 ? (
-                    <div className="text-center py-12 bg-white/10 rounded-2xl border-2 border-dashed border-white/30">
-                      <p className="text-white/60 mb-2">
-                        No customizations added yet
-                      </p>
-                      <p className="text-white/40 text-sm">
-                        Add options like "Extra Cheese", "Spice Level", etc.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {formData.customizations.map((customization, index) => (
-                        <div
-                          key={index}
-                          className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20"
-                        >
-                          <div className="flex items-start justify-between mb-4">
-                            <input
-                              type="text"
-                              placeholder="Customization name (e.g., Add-ons)"
-                              value={customization.name}
-                              onChange={(e) =>
-                                updateCustomization(
-                                  index,
-                                  "name",
-                                  e.target.value
-                                )
-                              }
-                              className="flex-1 px-4 py-2 bg-white/20 border-2 border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 font-medium"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => removeCustomization(index)}
-                              className="ml-2 p-2 bg-red-400/20 text-red-200 rounded-lg hover:bg-red-400/30 transition"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-
-                          <div className="flex gap-4 mb-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={customization.required}
-                                onChange={(e) =>
-                                  updateCustomization(
-                                    index,
-                                    "required",
-                                    e.target.checked
-                                  )
-                                }
-                                className="w-4 h-4 rounded border-2 border-white/30 bg-white/20 checked:bg-blue-500 checked:border-blue-500 cursor-pointer"
-                              />
-                              <span className="text-white text-sm font-medium">
-                                Required
-                              </span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={customization.multiSelect}
-                                onChange={(e) =>
-                                  updateCustomization(
-                                    index,
-                                    "multiSelect",
-                                    e.target.checked
-                                  )
-                                }
-                                className="w-4 h-4 rounded border-2 border-white/30 bg-white/20 checked:bg-blue-500 checked:border-blue-500 cursor-pointer"
-                              />
-                              <span className="text-white text-sm font-medium">
-                                Multi-select
-                              </span>
-                            </label>
-                          </div>
-
-                          <div className="space-y-2">
-                            {customization.options.map(
-                              (option, optionIndex) => (
-                                <div key={optionIndex} className="flex gap-2">
-                                  <input
-                                    type="text"
-                                    placeholder="Option name"
-                                    value={option.name}
-                                    onChange={(e) =>
-                                      updateCustomizationOption(
-                                        index,
-                                        optionIndex,
-                                        "name",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 text-sm font-medium"
-                                  />
-                                  <input
-                                    type="number"
-                                    placeholder="Price"
-                                    value={option.price}
-                                    onChange={(e) =>
-                                      updateCustomizationOption(
-                                        index,
-                                        optionIndex,
-                                        "price",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="w-24 px-3 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/60 text-sm font-medium"
-                                  />
-                                </div>
-                              )
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => addCustomizationOption(index)}
-                              className="text-white/70 hover:text-white text-sm font-medium transition"
-                            >
-                              + Add option
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Step 5: Availability */}
-              {currentStep === 5 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/20">
-                    <label className="flex items-center gap-3 cursor-pointer mb-6">
-                      <input
-                        type="checkbox"
-                        name="isAvailable"
-                        checked={formData.isAvailable}
-                        onChange={handleChange}
-                        className="w-6 h-6 rounded border-2 border-white/30 bg-white/20 checked:bg-green-500 checked:border-green-500 cursor-pointer"
-                      />
-                      <span className="text-white font-semibold text-lg">
-                        Item is currently available
-                      </span>
-                    </label>
-
-                    <p className="text-white font-semibold mb-3">
-                      Available Days
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-                        (day) => (
-                          <button
-                            key={day}
-                            type="button"
-                            onClick={() => toggleDay(day)}
-                            className={`px-4 py-2 rounded-lg font-semibold transition ${
-                              formData.availableDays.includes(day)
-                                ? "bg-white text-[#E59A01]"
-                                : "bg-white/20 text-white/70 hover:bg-white/30"
-                            }`}
-                          >
-                            {day}
-                          </button>
-                        )
-                      )}
-                    </div>
-
-                    <p className="text-white font-semibold mb-3">
-                      Available Time
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-white/80 text-sm mb-2">
-                          From
-                        </label>
-                        <input
-                          type="time"
-                          name="availableTimeStart"
-                          value={formData.availableTimeStart}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/20 border-2 border-white/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm font-medium"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-white/80 text-sm mb-2">
-                          To
-                        </label>
-                        <input
-                          type="time"
-                          name="availableTimeEnd"
-                          value={formData.availableTimeEnd}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 bg-white/20 border-2 border-white/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/60 backdrop-blur-sm font-medium"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Skipping complex steps 4 & 5 customization for DB mvp */}
             </form>
 
-            {/* Footer Navigation */}
+            {/* Footer - Fixed */}
             <div className="sticky bottom-0 z-10 bg-white/10 backdrop-blur-xl border-t border-white/20 px-8 py-6">
-              <div className="flex gap-4">
-                {currentStep > 1 && (
+              <div className="flex gap-4 justify-between">
+                {currentStep > 1 ? (
                   <button
                     type="button"
-                    onClick={() => setCurrentStep(currentStep - 1)}
+                    onClick={() => setCurrentStep((prev) => prev - 1)}
                     className="px-6 py-3.5 bg-white/10 border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all duration-200"
                   >
-                    ← Previous
+                    Back
                   </button>
+                ) : (
+                  <div></div>
                 )}
 
                 {currentStep < 5 ? (
                   <button
                     type="button"
-                    onClick={() => setCurrentStep(currentStep + 1)}
-                    className="flex-1 py-3.5 bg-white text-[#E59A01] rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02]"
+                    onClick={() => setCurrentStep((prev) => prev + 1)}
+                    className="px-6 py-3.5 bg-white text-[#E59A01] rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200"
                   >
-                    Next Step →
+                    Next
                   </button>
                 ) : (
                   <button
-                    type="submit"
+                    type="button"
                     onClick={handleSubmit}
-                    className="flex-1 py-3.5 bg-white text-[#E59A01] rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02]"
+                    disabled={isSubmitting}
+                    className="px-6 py-3.5 bg-green-500 text-white rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-200 disabled:opacity-50"
                   >
-                    ✓ Add Menu Item
+                    {isSubmitting ? "Saving..." : "Save Item"}
                   </button>
                 )}
               </div>

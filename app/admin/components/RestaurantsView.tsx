@@ -1,90 +1,60 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import AddRestaurantModal from "./AddRestaurantModal";
+import { supabase } from "../../lib/supabaseClient";
 
 const RestaurantsView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [restaurants, setRestaurants] = useState([
-    {
-      id: 1,
-      name: "Rasoi Restaurant",
-      owner: "Rajesh Kumar",
-      cuisine: "North Indian",
-      rating: 4.5,
-      orders: 1250,
-      revenue: "₹2,45,000",
-      status: "Active",
-      image: "🍛",
-      joinedDate: "Jan 2023",
-    },
-    {
-      id: 2,
-      name: "Pizza Paradise",
-      owner: "Amit Sharma",
-      cuisine: "Italian",
-      rating: 4.7,
-      orders: 980,
-      revenue: "₹1,85,000",
-      status: "Active",
-      image: "🍕",
-      joinedDate: "Mar 2023",
-    },
-    {
-      id: 3,
-      name: "Burger King",
-      owner: "Priya Patel",
-      cuisine: "Fast Food",
-      rating: 4.3,
-      orders: 1500,
-      revenue: "₹3,20,000",
-      status: "Active",
-      image: "🍔",
-      joinedDate: "Feb 2023",
-    },
-    {
-      id: 4,
-      name: "Sushi Express",
-      owner: "Vikram Singh",
-      cuisine: "Japanese",
-      rating: 4.8,
-      orders: 650,
-      revenue: "₹1,45,000",
-      status: "Pending",
-      image: "🍱",
-      joinedDate: "Nov 2024",
-    },
-    {
-      id: 5,
-      name: "Tandoor House",
-      owner: "Sneha Gupta",
-      cuisine: "Mughlai",
-      rating: 4.6,
-      orders: 890,
-      revenue: "₹1,95,000",
-      status: "Active",
-      image: "🥘",
-      joinedDate: "Apr 2023",
-    },
-    {
-      id: 6,
-      name: "Cafe Mocha",
-      owner: "Rahul Verma",
-      cuisine: "Cafe",
-      rating: 4.4,
-      orders: 720,
-      revenue: "₹1,25,000",
-      status: "Inactive",
-      image: "☕",
-      joinedDate: "Jun 2023",
-    },
-  ]);
+  const fetchRestaurants = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("restaurants")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const handleAddRestaurant = (newRestaurant: any) => {
-    setRestaurants([newRestaurant, ...restaurants]);
+      if (error) {
+        console.error("Error fetching restaurants:", error);
+      } else {
+        const mappedData = data.map((r) => ({
+          id: r.id,
+          name: r.name,
+          owner: "Admin Owner", // Placeholder as table doesn't have owner yet
+          cuisine: r.type,
+          rating: r.rating,
+          orders: r.review_count || 0, // Mocking orders count with review count for now
+          revenue:
+            "₹" + (Math.floor(Math.random() * 100000) + 50000).toLocaleString(), // Mock revenue
+          status: r.status === "Open" ? "Active" : "Inactive", // Simple mapping
+          image: r.image_url || "🍽️",
+          joinedDate: new Date(r.created_at).toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric",
+          }),
+        }));
+        setRestaurants(mappedData);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, [fetchRestaurants]);
+
+  const handleAddRestaurant = async () => {
+    // Refresh list after adding
+    await fetchRestaurants();
+    setIsModalOpen(false);
   };
 
   const filteredRestaurants = restaurants.filter((restaurant) => {
@@ -163,106 +133,126 @@ const RestaurantsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Restaurant Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-        {filteredRestaurants.map((restaurant) => (
-          <div
-            key={restaurant.id}
-            className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
-          >
-            {/* Status Badge */}
-            <div className="absolute top-4 right-4">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                  restaurant.status === "Active"
-                    ? "bg-green-400/20 text-green-200"
-                    : restaurant.status === "Pending"
-                    ? "bg-yellow-400/20 text-yellow-200"
-                    : "bg-red-400/20 text-red-200"
-                }`}
+      {/* Loading State */}
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        </div>
+      ) : (
+        <>
+          {/* Restaurant Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+            {filteredRestaurants.map((restaurant) => (
+              <div
+                key={restaurant.id}
+                className="group relative bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 hover:bg-white/15 transition-all duration-500 hover:-translate-y-2"
               >
-                {restaurant.status}
-              </span>
-            </div>
+                {/* Status Badge */}
+                <div className="absolute top-4 right-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
+                      restaurant.status === "Active"
+                        ? "bg-green-400/20 text-green-200"
+                        : restaurant.status === "Pending"
+                        ? "bg-yellow-400/20 text-yellow-200"
+                        : "bg-red-400/20 text-red-200"
+                    }`}
+                  >
+                    {restaurant.status}
+                  </span>
+                </div>
 
-            {/* Restaurant Icon */}
-            <div className="mb-4">
-              <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                {restaurant.image}
-              </div>
-            </div>
+                {/* Restaurant Icon/Image */}
+                <div className="mb-4">
+                  <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-5xl shadow-lg group-hover:scale-110 transition-transform duration-300 overflow-hidden relative">
+                    {restaurant.image && restaurant.image.startsWith("/") ? (
+                      <Image
+                        src={restaurant.image}
+                        alt={restaurant.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      restaurant.image
+                    )}
+                  </div>
+                </div>
 
-            {/* Restaurant Info */}
-            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
-              {restaurant.name}
-            </h3>
-            <p className="text-white/70 text-sm mb-1">{restaurant.cuisine}</p>
-            <p className="text-white/50 text-xs mb-4">
-              Owner: {restaurant.owner}
-            </p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Rating</p>
-                <p className="text-white font-bold flex items-center gap-1">
-                  ⭐ {restaurant.rating}
+                {/* Restaurant Info */}
+                <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#D92E2E] transition-colors">
+                  {restaurant.name}
+                </h3>
+                <p className="text-white/70 text-sm mb-1">
+                  {restaurant.cuisine}
                 </p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-white/50 text-xs mb-1">Orders</p>
-                <p className="text-white font-bold">{restaurant.orders}</p>
-              </div>
-            </div>
+                <p className="text-white/50 text-xs mb-4">
+                  Owner: {restaurant.owner}
+                </p>
 
-            {/* Revenue */}
-            <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-xl p-3 mb-4">
-              <p className="text-white/50 text-xs mb-1">Total Revenue</p>
-              <p className="text-white font-bold text-lg">
-                {restaurant.revenue}
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-white/50 text-xs mb-1">Rating</p>
+                    <p className="text-white font-bold flex items-center gap-1">
+                      ⭐ {restaurant.rating}
+                    </p>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-white/50 text-xs mb-1">Orders</p>
+                    <p className="text-white font-bold">{restaurant.orders}</p>
+                  </div>
+                </div>
+
+                {/* Revenue */}
+                <div className="bg-gradient-to-r from-green-400/10 to-emerald-600/10 rounded-xl p-3 mb-4">
+                  <p className="text-white/50 text-xs mb-1">Total Revenue</p>
+                  <p className="text-white font-bold text-lg">
+                    {restaurant.revenue}
+                  </p>
+                </div>
+
+                {/* Joined Date */}
+                <p className="text-white/40 text-xs mb-4">
+                  Joined: {restaurant.joinedDate}
+                </p>
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
+                    View Details
+                  </button>
+                  <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <circle cx="12" cy="12" r="1"></circle>
+                      <circle cx="12" cy="5" r="1"></circle>
+                      <circle cx="12" cy="19" r="1"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredRestaurants.length === 0 && (
+            <div className="text-center py-20 relative z-10">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No restaurants found
+              </h3>
+              <p className="text-white/70">
+                Try adjusting your search or filter criteria
               </p>
             </div>
-
-            {/* Joined Date */}
-            <p className="text-white/40 text-xs mb-4">
-              Joined: {restaurant.joinedDate}
-            </p>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button className="flex-1 py-2 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition">
-                View Details
-              </button>
-              <button className="px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="12" cy="5" r="1"></circle>
-                  <circle cx="12" cy="19" r="1"></circle>
-                </svg>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredRestaurants.length === 0 && (
-        <div className="text-center py-20 relative z-10">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-2xl font-bold text-white mb-2">
-            No restaurants found
-          </h3>
-          <p className="text-white/70">
-            Try adjusting your search or filter criteria
-          </p>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
